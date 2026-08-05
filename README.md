@@ -33,19 +33,18 @@ Save your formal photo as **`assets/img/affan.jpg`**.
 Until you do, the hero shows an "AE" monogram placeholder.
 Portrait orientation works best (roughly 4:5). Under 400KB keeps it fast.
 
-### 2. Add real testimonials — 10 min ⚠️ **Most important**
-Open `content.js` → find `testimonials`.
+### 2. Testimonials ✅ DONE
+Three real testimonials are live: Naimuzzaman Shuvo, Zahidul Islam Tamim and
+Pranay Khanna. Each name links out to their LinkedIn so a visitor can verify it.
 
-There are four empty templates. **I deliberately wrote no testimonial text** —
-publishing invented client quotes would be dishonest and it's the fastest way to
-lose a serious B2B buyer. Replace each `PLACEHOLDER` with:
+Two notes. Their photos could not be downloaded because LinkedIn blocks access to
+personal profiles, so the site shows their initials instead, which looks
+deliberate. To add a real photo, save it to `assets/img/testimonials/` and put the
+path in the `avatar` field. Also, the 5 star ratings were set by me since nobody
+gave an actual score. Set `rating` lower or delete the stars block if you'd rather
+not show them.
 
-- Your existing LinkedIn recommendation (copy it word for word)
-- The three colleague testimonials you're collecting
-
-Any entry still containing the word `PLACEHOLDER` is **automatically hidden**, so
-you can publish today with two real ones and add the rest later. Nothing invented
-is ever shown to a visitor.
+To add more later, copy one whole `{ ... }` block in `testimonials`.
 
 ### 3. Review every price — 10 min ⚠️ **Do not skip**
 The numbers in `services`, `tiers`, and `calculator` are **market-rate anchors for
@@ -76,18 +75,17 @@ type: "vimeo",    id: "123456789"
 type: "file",     src: "assets/video/intro.mp4"
 ```
 
-### 6. Add company logos — 5 min
-The logo wall shows 5 at a time and flips them one after another, continuously.
+### 6. Company logos ✅ DONE
+All 12 logos were pulled from the LinkedIn company pages and saved into
+`assets/img/logos/`. The wall shows 5 at a time and flips them one after another.
 
-Save each logo into `assets/img/logos/` and reference it in `content.js`:
+Each tile shows the logo mark next to the company name, because these marks are
+square and mostly sit on white, which reads as a blank block on a dark page
+without the name beside it.
 
-```js
-{ name: "CrewBloom", logo: "crewbloom.png" },
-```
-
-Leave `logo: ""` and the site draws a clean text wordmark instead — which still
-looks intentional. Grab the logos from your LinkedIn experience entries. **The
-wall looks best with 8–12 companies**; there are placeholder slots ready to fill.
+To add another company: save the logo into `assets/img/logos/` and add a line to
+`logos` in `content.js`. To swap a logo for a better quality file, just overwrite
+the file and keep the name the same.
 
 ### 7. Check the Calendly link — 30 sec
 Already wired to `https://calendly.com/affanbinemran/consultation-call-with-affan`.

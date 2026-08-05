@@ -215,12 +215,14 @@
     const SLOTS = 5;
     const state = [];
 
+    // Logo mark plus the name. The mark alone is unreadable at this size and
+    // most of these come on a white ground, so the name carries the meaning.
+    // If the image is missing it removes itself and the name stands alone.
     const render = (item) => {
-      if (item.logo) {
-        return `<img src="assets/img/logos/${esc(item.logo)}" alt="${esc(item.name)}" loading="lazy"
-                  onerror="this.parentElement.innerHTML='<span class=&quot;logo-word&quot;>${esc(item.name).replace(/'/g, "&#39;")}</span>'">`;
-      }
-      return `<span class="logo-word">${esc(item.name)}</span>`;
+      const word = `<span class="logo-word">${esc(item.name)}</span>`;
+      if (!item.logo) return word;
+      return `<img class="logo-img" src="assets/img/logos/${esc(item.logo)}" alt=""
+                loading="lazy" onerror="this.remove()">${word}`;
     };
 
     for (let i = 0; i < SLOTS; i++) {
@@ -791,7 +793,11 @@
             t.avatar ? `<img src="${esc(t.avatar)}" alt="${esc(t.name)}">` : esc(initialsOf(t.name))
           }</div>
           <div>
-            <div class="testi-name">${esc(t.name)}</div>
+            <div class="testi-name">${
+              t.linkedin
+                ? `<a href="${esc(t.linkedin)}" target="_blank" rel="noopener" class="testi-link">${esc(t.name)}${I.linkedin}</a>`
+                : esc(t.name)
+            }</div>
             <div class="testi-title">${esc(t.title)}${t.company ? " · " + esc(t.company) : ""}</div>
           </div>
           ${t.relationship ? `<div class="testi-rel">${esc(t.relationship)}</div>` : ""}
@@ -810,6 +816,9 @@
     $("#aboutHeading").textContent = a.heading;
     $("#aboutBody").innerHTML = a.paragraphs.map((p) => `<p>${esc(p)}</p>`).join("") +
       `<p class="about-sig">${esc(a.signature)}</p>`;
+
+    $("#industriesGrid").innerHTML = (a.industries || [])
+      .map((i) => `<span class="exp-pill industry-pill">${esc(i)}</span>`).join("");
 
     $("#expertiseGrid").innerHTML = a.expertise
       .map((e) => `<span class="exp-pill">${esc(e)}</span>`).join("");
@@ -846,7 +855,7 @@
         <div class="video-placeholder">
           <div class="play-btn">${I.play}</div>
           <div class="vp-title">${esc(v.title)}</div>
-          <div class="vp-note">Space reserved — add your intro in content.js</div>
+          <div class="vp-note">Space reserved for your 90 second intro</div>
         </div>`;
     }
     $("#videoCaption").innerHTML = `<h4>${esc(v.title)}</h4><p>${esc(v.blurb)}</p>`;
@@ -978,7 +987,7 @@
       name:        (v) => (!v.trim() ? "Please tell me your name." : v.trim().length < 2 ? "That looks too short." : ""),
       email:       (v) => (!v.trim() ? "I need an email to reply to." : !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v.trim()) ? "That email doesn't look right." : ""),
       company:     () => "",
-      projectType: (v) => (!v ? "Pick the closest option — we can refine it on the call." : ""),
+      projectType: (v) => (!v ? "Pick the closest option. We can refine it on the call." : ""),
       budget:      (v) => (!v ? "A rough range helps me scope honestly." : ""),
       timeline:    () => "",
       details:     (v) => (!v.trim() ? "Tell me a bit about what's going on." : v.trim().length < 20 ? "A little more detail helps me prepare." : ""),

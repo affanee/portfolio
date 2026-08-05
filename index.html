@@ -3,15 +3,15 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Affan Bin Emran — GTM &amp; RevOps Consultant</title>
-<meta name="description" content="GTM and RevOps consultant for B2B SaaS and service companies.">
+<title>Affan Bin Emran | GTM &amp; RevOps Consultant</title>
+<meta name="description" content="I help founders and small teams sort out the tools, data and handoffs between marketing, sales and support, so growth stops being chaotic.">
 <meta name="author" content="Affan Bin Emran">
 <meta name="theme-color" content="#0A0A0B">
 
 <!-- Open Graph / social sharing -->
 <meta property="og:type" content="website">
-<meta property="og:title" content="Affan Bin Emran — GTM &amp; RevOps Consultant">
-<meta property="og:description" content="I build and fix the revenue engine for B2B teams — GTM operations, RevOps, CRM architecture, and outbound systems that make pipeline predictable.">
+<meta property="og:title" content="Affan Bin Emran | GTM &amp; RevOps Consultant">
+<meta property="og:description" content="I help companies grow properly. The tools, the data and the handoffs between marketing, sales and support.">
 <meta property="og:image" content="assets/img/affan.jpg">
 <meta name="twitter:card" content="summary_large_image">
 
@@ -22,7 +22,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;450;500;550;600;700&family=Inter+Tight:wght@500;600;650;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 
 <!-- Bump ?v= after editing CSS/JS to force browsers past a cached copy -->
-<link rel="stylesheet" href="assets/css/styles.css?v=6">
+<link rel="stylesheet" href="assets/css/styles.css?v=16">
 </head>
 <body>
 
@@ -67,7 +67,7 @@
   <a class="m-link" href="#testimonials">Testimonials <span>06</span></a>
   <a class="m-link" href="#about">About <span>07</span></a>
   <a class="m-link" href="#contact">Contact <span>08</span></a>
-  <a class="btn btn-primary btn-lg js-calendly" href="#" target="_blank" rel="noopener">Book a free diagnostic</a>
+  <a class="btn btn-primary btn-lg js-calendly" href="#" target="_blank" rel="noopener">Book a free call</a>
 </div>
 
 <main id="top">
@@ -83,7 +83,7 @@
       <div class="hero-copy">
         <div class="badge-avail">
           <span class="pulse-dot"></span>
-          <span id="heroAvail">Available for new engagements</span>
+          <span id="heroAvail">Open to new projects</span>
         </div>
 
         <h1 class="h-display" id="heroHeadline"></h1>
@@ -197,7 +197,7 @@
 
       <aside class="calc-result reveal">
         <h4>Your estimated range</h4>
-        <div class="estimate-range" id="estimateRange">—</div>
+        <div class="estimate-range" id="estimateRange">...</div>
         <p class="estimate-unit" id="estimateUnit"></p>
         <div class="calc-summary" id="calcSummary"></div>
         <a class="btn btn-primary btn-block" id="calcToContact" href="#contact">
@@ -230,7 +230,10 @@
         <h2 class="h-section" id="aboutHeading" style="margin-bottom:var(--space-6)"></h2>
         <div class="about-body" id="aboutBody"></div>
 
-        <h5 class="mono" style="color:var(--fg-faint);margin-top:var(--space-7)">Where I go deep</h5>
+        <h5 class="mono" style="color:var(--fg-muted);margin-top:var(--space-7)">Industries I have worked in</h5>
+        <div class="expertise-grid" id="industriesGrid"></div>
+
+        <h5 class="mono" style="color:var(--fg-muted);margin-top:var(--space-7)">Where I go deep</h5>
         <div class="expertise-grid" id="expertiseGrid"></div>
 
         <div class="edu-card" id="eduCard"></div>
@@ -243,7 +246,7 @@
           <div class="video-caption" id="videoCaption"></div>
         </div>
 
-        <h5 class="mono" style="color:var(--fg-faint);margin-top:var(--space-7)">Tools I work in daily</h5>
+        <h5 class="mono" style="color:var(--fg-muted);margin-top:var(--space-7)">Tools I work in daily</h5>
         <div class="tools-marquee">
           <div class="tools-track" id="toolsTrack"></div>
         </div>
@@ -327,9 +330,9 @@
             </svg>
           </div>
           <h3>Got it, <span id="successName">there</span>.</h3>
-          <p>Your message is with me. I read every enquiry personally and you'll have a real reply
-             within one business day — not an autoresponder.</p>
-          <p style="font-size:0.9rem">Want to skip the wait? Put 30 minutes straight into my calendar.</p>
+          <p>Your message is with me. I read every one myself and you will get a real reply
+             within one working day. Not an autoresponder.</p>
+          <p style="font-size:0.9rem">Do not want to wait? Put 30 minutes straight into my calendar.</p>
           <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:24px">
             <a class="btn btn-primary js-calendly" href="#" target="_blank" rel="noopener">Book a call now</a>
             <button class="btn btn-ghost" id="resetForm" type="button">Send another message</button>
@@ -340,8 +343,8 @@
       <!-- SIDE -->
       <aside class="contact-side">
         <div class="booking-card reveal">
-          <h4>Next available consultations</h4>
-          <p>Free 30 minutes, no pitch. Pick a day and my live calendar opens with the exact times.</p>
+          <h4>Next available slots</h4>
+          <p>Free 30 minutes, no pitch. Pick a day and my calendar opens with the exact times.</p>
           <div class="slot-grid" id="slotGrid"></div>
           <a class="btn btn-primary btn-block js-calendly" href="#" target="_blank" rel="noopener">
             See all available times
@@ -416,7 +419,7 @@
 <!-- ====================== CASE STUDY MODAL ====================== -->
 <div class="modal-backdrop" id="modalBackdrop"></div>
 
-<script src="assets/js/content.js?v=6"></script>
-<script src="assets/js/app.js?v=6"></script>
+<script src="assets/js/content.js?v=16"></script>
+<script src="assets/js/app.js?v=16"></script>
 </body>
 </html>

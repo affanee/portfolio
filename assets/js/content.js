@@ -22,9 +22,9 @@ const CONTENT = {
     name: "Affan Bin Emran",
     initials: "AE",
     role: "GTM & RevOps Consultant",
-    siteTitle: "Affan Bin Emran — GTM & RevOps Consultant",
+    siteTitle: "Affan Bin Emran | GTM & RevOps Consultant",
     metaDescription:
-      "I help B2B companies clean up their CRM, build outbound that actually books meetings and make their sales numbers something you can trust.",
+      "I help founders and small teams sort out the tools, data and handoffs between marketing, sales and support, so growth stops being chaotic.",
     email: "affanbinemran@gmail.com",
     phone: "+880 1814 648788",
     phoneHref: "+8801814648788",
@@ -59,11 +59,11 @@ const CONTENT = {
   hero: {
     availability: "Open to new projects",
     // The big headline. Each line is one item in the list.
-    headline: ["Hey, I'm Affan.", "I fix the systems", "behind your sales."],
+    headline: ["Hey, I'm Affan 👋🏻"],
     // This word gets the blue gradient treatment
     highlight: "Affan",
     subhead:
-      "Most companies do not have a sales problem. They have a plumbing problem. The CRM is a mess, nobody trusts the numbers and outbound stopped working months ago. I go in and rebuild that machine so growth stops depending on luck.",
+      "Most teams I meet are growing, but behind the scenes everything is a scramble. Too many tools, messy data and things falling between marketing, sales and support. I come in and quietly put it in order, so your team spends less time chasing and more time doing the work.",
     primaryCta: "Book a free call",
     secondaryCta: "See the work",
 
@@ -109,15 +109,18 @@ const CONTENT = {
      ====================================================================== */
   logosHeading: "I have also worked with",
   logos: [
-    { name: "CrewBloom", logo: "" },
-    { name: "Starwebtek", logo: "" },
-    { name: "Emran's Heritage Home", logo: "" },
-    // ⚠️ ADD MORE. The wall looks best with 8 to 12 entries.
-    { name: "Your Client 4", logo: "" },
-    { name: "Your Client 5", logo: "" },
-    { name: "Your Client 6", logo: "" },
-    { name: "Your Client 7", logo: "" },
-    { name: "Your Client 8", logo: "" },
+    { name: "CrewBloom",             logo: "crewbloom.jpeg" },
+    { name: "Red Lantern",           logo: "red-lantern-digital-media.jpeg" },
+    { name: "Rainmaker",             logo: "rainmaker-group-ltd.jpeg" },
+    { name: "Polynize",              logo: "polynize.jpeg" },
+    { name: "Eriscale",              logo: "eriscale.jpeg" },
+    { name: "Actnovate",             logo: "actinovate-group.jpeg" },
+    { name: "Text Only",             logo: "text-only.jpeg" },
+    { name: "Emran's Heritage Home", logo: "lunch-at-emrans-heritage-home.jpeg" },
+    { name: "Hype Technology",       logo: "hype-tech.jpeg" },
+    { name: "Kampus Group",          logo: "kampus-group-education.jpeg" },
+    { name: "YSSE",                  logo: "ysseglobal.jpeg" },
+    { name: "Kuubiik",               logo: "kuubiikexperts.jpeg" },
   ],
 
   /* ==========================================================================
@@ -507,47 +510,42 @@ const CONTENT = {
   testimonials: [
     {
       id: "t1",
-      quote: "PLACEHOLDER — paste the full text of your LinkedIn recommendation here.",
-      name: "PLACEHOLDER — Their Name",
-      title: "PLACEHOLDER — Their Job Title",
-      company: "PLACEHOLDER — Their Company",
-      relationship: "Worked with me directly",
+      quote:
+        "Affan has a keen eye for business and he's one of the sharpest minds I've come across when it comes to sales strategies & GTM Ops. Aside from being a highly skilled operator, he's also super professional & a true gentleman. A true delight to work with!",
+      name: "Naimuzzaman Shuvo",
+      title: "Lead Frontend Engineer",
+      company: "Datatailr",
+      relationship: "Worked together",
       rating: 5,
-      avatar: "", // optional: "assets/img/testimonials/name.jpg"
-      linkedin: "",
+      // To add their photo: save it as assets/img/testimonials/naimuzzaman.jpg
+      // and put "assets/img/testimonials/naimuzzaman.jpg" below. Until then the
+      // site shows their initials, which looks intentional.
+      avatar: "",
+      linkedin: "https://www.linkedin.com/in/naimuzzaman-sh/",
     },
     {
       id: "t2",
-      quote: "PLACEHOLDER — paste testimonial 2 here.",
-      name: "PLACEHOLDER — Their Name",
-      title: "PLACEHOLDER — Their Job Title",
-      company: "PLACEHOLDER — Their Company",
-      relationship: "Former colleague",
+      quote:
+        "Affan is always one step ahead of most people when it comes to having an idea and then executing it. I had the privilege of witnessing it first hand at Text Only, a brand we co-founded as Sophomores in University. His never-say-never attitude is something to admire.",
+      name: "Zahidul Islam Tamim",
+      title: "Investment Analyst",
+      company: "BRAC EPL Investments Ltd",
+      relationship: "Co-founder, Text Only",
       rating: 5,
       avatar: "",
-      linkedin: "",
+      linkedin: "https://www.linkedin.com/in/zahidul-islam-tamim-b62563162/",
     },
     {
       id: "t3",
-      quote: "PLACEHOLDER — paste testimonial 3 here.",
-      name: "PLACEHOLDER — Their Name",
-      title: "PLACEHOLDER — Their Job Title",
-      company: "PLACEHOLDER — Their Company",
-      relationship: "Former teammate",
+      quote:
+        "I've collaborated with Affan on FIFA content for Bangladesh, and he has always been extremely diligent and genuinely passionate about Bangladesh football. I would definitely recommend working with him.",
+      name: "Pranay Khanna",
+      title: "Client Services Manager",
+      company: "Red Lantern",
+      relationship: "Client side",
       rating: 5,
       avatar: "",
-      linkedin: "",
-    },
-    {
-      id: "t4",
-      quote: "PLACEHOLDER — paste testimonial 4 here.",
-      name: "PLACEHOLDER — Their Name",
-      title: "PLACEHOLDER — Their Job Title",
-      company: "PLACEHOLDER — Their Company",
-      relationship: "Former teammate",
-      rating: 5,
-      avatar: "",
-      linkedin: "",
+      linkedin: "https://www.linkedin.com/in/pranay-khanna-21a4a71b9/",
     },
   ],
 
@@ -593,11 +591,11 @@ const CONTENT = {
      11. ABOUT
      ====================================================================== */
   about: {
-    heading: "I carried a quota first. That is why my systems work.",
+    heading: "A little about me.",
     paragraphs: [
       "I started in sales. SDR, then closer, then account manager, long before I touched anything called RevOps. That order matters. I have sat in the seat where a badly built CRM costs you a deal, where a sloppy handoff lets a hot lead go cold and where a forecast built on hope gets pulled apart in front of leadership.",
       "So when I rebuild a revenue system I am not designing it to look good in a diagram. I am designing it for the rep who has eleven minutes between calls and needs the next step to be obvious.",
-      "Over 4 years across B2B SaaS, digital services, staffing and hospitality I have built outbound engines, rebuilt CRMs and got sales, marketing and ops pulling in the same direction for teams selling into the US, UK, EU and APAC. The pattern is almost always the same. The strategy is fine. The system underneath it is not.",
+      "Over 4 years across B2B SaaS, fintech, DeFi, martech, staffing, digital services and hospitality I have built outbound engines, rebuilt CRMs and got sales, marketing and ops pulling in the same direction for teams selling into the US, UK, EU and APAC. The pattern is almost always the same. The strategy is fine. The system underneath it is not.",
     ],
     signature: "Let's find out what yours is doing.",
 
@@ -607,19 +605,40 @@ const CONTENT = {
       period: "2022 to 2025",
     },
 
+    // Industries. Shown as pills under "Industries I have worked in".
+    industries: [
+      "B2B SaaS",
+      "Fintech",
+      "DeFi",
+      "MarTech",
+      "Staffing",
+      "Digital Services",
+      "Hospitality",
+    ],
+
     expertise: [
       "GTM Strategy",
+      "GTM Engineering",
       "Revenue Operations",
       "Sales Operations",
       "CRM Architecture",
-      "CRM Cleanup & Data Hygiene",
-      "Pipeline & Funnel Work",
+      "CRM Management",
+      "CRM Cleanup & Hygiene",
       "Demand Generation",
+      "Pipeline Optimization",
+      "Funnel Optimization",
       "Outbound Prospecting",
-      "Targeting & Segmentation",
-      "Account Management",
+      "ICP Targeting",
+      "Market Segmentation",
+      "B2B SaaS Sales",
+      "Revenue Growth",
+      "Customer Acquisition",
+      "Conversion Optimization",
       "Sales Forecasting",
-      "Getting Teams Aligned",
+      "Cross Functional GTM Alignment",
+      "Account Management",
+      "Growth Management",
+      "Fractional Sales Ops",
     ],
 
     tools: [
