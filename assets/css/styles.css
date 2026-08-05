@@ -1008,8 +1008,22 @@ section { position: relative; }
   border: 1px solid var(--border);
 }
 
-.empty-state { text-align: center; padding: var(--space-9) var(--space-5); color: var(--fg-dim); }
-.empty-state svg { width: 44px; height: 44px; margin: 0 auto var(--space-4); color: var(--fg-faint); }
+.empty-state {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: var(--space-8) var(--space-5);
+  color: var(--fg-muted);
+  border: 1px dashed var(--border-hi);
+  border-radius: var(--r-xl);
+  background: rgba(255,255,255,0.02);
+}
+.empty-state svg { width: 40px; height: 40px; margin: 0 auto var(--space-4); color: var(--accent-hi); }
+.empty-state strong {
+  display: block; color: var(--fg); font-size: 1.12rem; font-weight: 600;
+  font-family: var(--font-display); letter-spacing: -0.02em; margin-bottom: 10px;
+}
+.empty-state p { max-width: 52ch; margin: 0 auto var(--space-5); line-height: 1.65; font-size: 0.94rem; }
+.empty-state .btn svg { width: 17px; height: 17px; margin: 0; color: currentColor; }
 
 /* --------------------------------------------------------------------------
    12. CASE STUDY MODAL

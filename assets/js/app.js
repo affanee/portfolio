@@ -333,8 +333,16 @@
     $("#workSubhead").textContent = C.workSubhead;
 
     const types = [...new Set(C.caseStudies.map((c) => c.type))];
-    const industries = [...new Set(C.caseStudies.map((c) => c.industry))];
     const skills = [...new Set(C.caseStudies.flatMap((c) => c.skills))];
+
+    // Industries come from the full list in `about.industries` so every sector
+    // Affan has worked in shows up, not only the ones with a written case study.
+    // Anything tagged on a case study but missing from that list still appears.
+    const tagged = [...new Set(C.caseStudies.flatMap(industriesOf))];
+    const industries = [
+      ...(C.about.industries || []),
+      ...tagged.filter((i) => !(C.about.industries || []).includes(i)),
+    ];
 
     const chip = (key, val, label) =>
       `<button class="chip" data-key="${esc(key)}" data-val="${esc(val)}">${esc(label)}</button>`;
@@ -366,9 +374,14 @@
     });
   }
 
+  // A case study can sit in more than one sector, so `industries` (array) wins
+  // when present and `industry` (single) is the fallback.
+  const industriesOf = (cs) => cs.industries || [cs.industry];
+
   function matches(cs, f) {
     if (f.key === "all") return true;
     if (f.key === "skills") return cs.skills.includes(f.value);
+    if (f.key === "industry") return industriesOf(cs).includes(f.value);
     return cs[f.key] === f.value;
   }
 
@@ -382,7 +395,18 @@
 
     const paint = () => {
       if (!list.length) {
-        grid.innerHTML = `<div class="empty-state">${I.search}<p>No case studies match that filter yet.</p></div>`;
+        // Not every engagement has a public write-up. Say so plainly and give
+        // them somewhere to go rather than leaving an empty grid.
+        grid.innerHTML = `
+          <div class="empty-state">
+            ${I.inbox}
+            <strong>I have worked in ${esc(activeFilter.value)}, this one is not written up yet.</strong>
+            <p>Some of the work sits under NDA and some just has not been turned into a case study.
+               Happy to talk you through what I did and what it moved.</p>
+            <a class="btn btn-primary" href="${esc(C.identity.calendly)}" target="_blank" rel="noopener">
+              Ask me about it ${I.arrowRight}
+            </a>
+          </div>`;
         return;
       }
       grid.innerHTML = list

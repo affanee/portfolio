@@ -335,7 +335,10 @@ const CONTENT = {
       company: "CrewBloom",
       role: "RevOps Manager, then GTM Operations Manager",
       period: "Nov 2024 to Jun 2026",
+      // "industry" is the one shown on the card. Add "industries" to make a case
+      // study appear under more than one filter.
       industry: "B2B SaaS",
+      industries: ["B2B SaaS", "Staffing"],
       type: "RevOps",
       skills: ["CRM Architecture", "Pipeline Optimization", "Forecasting", "Salesforce"],
       headline: "Rebuilt sales operations around a 2,000 lead pipeline and cut time to close by 22%",
