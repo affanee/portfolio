@@ -366,6 +366,30 @@ section { position: relative; }
   color: #fff;
   letter-spacing: -0.02em;
   box-shadow: var(--shadow-accent);
+  flex-shrink: 0;
+  transition: transform var(--dur) var(--ease-spring), box-shadow var(--dur);
+}
+/* The mark is a cut-out of his head with the background removed, floating
+   rather than boxed. No circle, no card, no tile. It reads as a sticker of a
+   person instead of a placeholder monogram. */
+.brand-mark.has-photo {
+  width: 44px; height: 44px;
+  background: none;
+  background-image: var(--brand-photo);
+  background-size: contain;
+  background-position: center bottom;
+  background-repeat: no-repeat;
+  border-radius: 0;
+  box-shadow: none;
+  color: transparent;
+  font-size: 0;
+  filter: drop-shadow(0 3px 6px rgba(0,0,0,0.55));
+  transform-origin: 50% 90%;
+}
+/* A small lift and tilt on hover. Enough to feel alive, not enough to annoy. */
+.brand:hover .brand-mark.has-photo {
+  transform: translateY(-2px) rotate(-4deg) scale(1.06);
+  filter: drop-shadow(0 6px 12px rgba(59,130,246,0.45));
 }
 .brand-text { display: flex; flex-direction: column; line-height: 1.15; }
 .brand-name { font-size: 0.95rem; }

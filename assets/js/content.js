@@ -39,6 +39,11 @@ const CONTENT = {
     // If the file is missing, the site shows an initials monogram instead.
     photo: "assets/img/affan.jpg",
 
+    // The little mark beside your name in the header and footer. This is a
+    // cut-out of your head with the background removed, so it floats instead of
+    // sitting in a box. Set to "" to fall back to the "AE" initials.
+    brandMark: "assets/img/affan-head.png",
+
     resume: "assets/Affan-Bin-Emran-Resume.pdf",
   },
 
@@ -736,13 +741,14 @@ const CONTENT = {
 
     responsePromise: "Every message gets a real reply within one working day.",
 
-    // When you are open for calls. Each string is shown on its own line inside
-    // the day tile, so keep them short.
+    /* When you are open for calls.
+       Hours are whole numbers on a 24 hour clock and always in GMT/UTC.
+       The site converts them into each visitor's own timezone automatically,
+       so someone in Singapore or California sees their local time, not yours.
+       7 means 7am, 18 means 6pm. */
     availability: {
-      weekdays: ["7–9am", "6–8pm"],
-      weekends: ["9am–5pm"],
-      timezoneNote:
-        "All times GMT. Pick a day and my calendar shows the exact times in your own timezone.",
+      weekdays: [{ start: 7, end: 9 }, { start: 18, end: 20 }],
+      weekends: [{ start: 9, end: 17 }],
     },
   },
 

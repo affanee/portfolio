@@ -158,6 +158,22 @@
   /* ------------------------------------------------------------------
      HERO
      ------------------------------------------------------------------ */
+  // Swap the "AE" initials for the cut-out head mark, but only once the file is
+  // confirmed to load, so a missing image leaves the initials in place.
+  function initBrandMark() {
+    const src = C.identity.brandMark;
+    if (!src) return;
+    const probe = new Image();
+    probe.onload = () => {
+      $$(".brand-mark").forEach((el) => {
+        el.style.setProperty("--brand-photo", `url("${src}")`);
+        el.classList.add("has-photo");
+        el.setAttribute("aria-label", C.identity.name);
+      });
+    };
+    probe.src = src;
+  }
+
   function initHero() {
     const h = C.hero;
     $("#heroAvail").textContent = h.availability;
@@ -916,26 +932,73 @@
   function initBooking() {
     const grid = $("#slotGrid");
     const av = (C.contact && C.contact.availability) || {};
-    const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-    const today = new Date();
-    let html = "";
+    const now = new Date();
 
-    // Next six days, weekends included, each showing the real window for that
-    // day rather than a made up count of free slots.
-    for (let offset = 1; offset <= 6; offset++) {
-      const d = new Date(today);
-      d.setDate(today.getDate() + offset);
-      const dow = d.getDay();
-      const isWeekend = dow === 0 || dow === 6;
-      const hours = (isWeekend ? av.weekends : av.weekdays) || [];
-      html += `<button class="slot" data-date="${d.toDateString()}">
-          <span class="slot-day">${days[dow]}</span>
-          <span class="slot-date">${d.getDate()} ${d.toLocaleString("en", { month: "short" })}</span>
-          <span class="slot-hours">${hours.map((h) => `<span>${esc(h)}</span>`).join("")}</span>
-        </button>`;
+    /* Availability is authored in GMT but shown in the visitor's own timezone.
+       Each window becomes a real Date pair, which the browser converts using
+       the viewer's locale and DST rules. A window can land on a different
+       local date than its GMT date (6pm GMT Friday is 2am Saturday in
+       Singapore), so windows are grouped by LOCAL date, not by GMT date. */
+    const windowsFor = (utcDow) =>
+      (utcDow === 0 || utcDow === 6 ? av.weekends : av.weekdays) || [];
+
+    const instances = [];
+    for (let offset = 0; offset <= 12; offset++) {
+      const probe = new Date(Date.UTC(
+        now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate() + offset));
+      windowsFor(probe.getUTCDay()).forEach((w) => {
+        const start = new Date(Date.UTC(
+          probe.getUTCFullYear(), probe.getUTCMonth(), probe.getUTCDate(), w.start));
+        const end = new Date(Date.UTC(
+          probe.getUTCFullYear(), probe.getUTCMonth(), probe.getUTCDate(), w.end));
+        if (start > now) instances.push({ start, end });
+      });
     }
-    grid.innerHTML = html;
-    if (av.timezoneNote) $("#slotNote").textContent = av.timezoneNote;
+    instances.sort((a, b) => a.start - b.start);
+
+    // Group into local calendar days
+    const byDay = new Map();
+    instances.forEach((inst) => {
+      const key = inst.start.toLocaleDateString();
+      if (!byDay.has(key)) byDay.set(key, { date: inst.start, ranges: [] });
+      byDay.get(key).ranges.push(inst);
+    });
+
+    const time = (d) =>
+      d.getMinutes() === 0
+        ? d.toLocaleTimeString([], { hour: "numeric" })
+        : d.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" });
+
+    // "4 PM–6 PM" collapses to "4–6 PM" when both ends share a meridiem
+    const range = (a, b) => {
+      const s = time(a), e = time(b);
+      const m = s.match(/\s?([AP]\.?M\.?)$/i);
+      if (m && e.toUpperCase().endsWith(m[1].toUpperCase())) {
+        return s.replace(/\s?[AP]\.?M\.?$/i, "") + "–" + e;
+      }
+      return s + "–" + e;
+    };
+
+    grid.innerHTML = [...byDay.values()].slice(0, 6).map((day) => `
+      <button class="slot" data-date="${day.date.toDateString()}">
+        <span class="slot-day">${day.date.toLocaleDateString([], { weekday: "short" })}</span>
+        <span class="slot-date">${day.date.toLocaleDateString([], { day: "numeric", month: "short" })}</span>
+        <span class="slot-hours">${day.ranges.map((r) => `<span>${esc(range(r.start, r.end))}</span>`).join("")}</span>
+      </button>`).join("");
+
+    // Name the timezone so nobody has to wonder whose clock this is
+    let zone = "";
+    try { zone = Intl.DateTimeFormat().resolvedOptions().timeZone || ""; } catch (e) {}
+    const offMin = -now.getTimezoneOffset();
+    const sign = offMin < 0 ? "-" : "+";
+    const oh = Math.floor(Math.abs(offMin) / 60);
+    const om = Math.abs(offMin) % 60;
+    const gmt = `GMT${sign}${oh}${om ? ":" + String(om).padStart(2, "0") : ""}`;
+    const city = zone ? zone.split("/").pop().replace(/_/g, " ") : "";
+
+    $("#slotNote").textContent = city
+      ? `Shown in your time (${city}, ${gmt}). Pick a day and my calendar opens on it.`
+      : `Shown in your local time (${gmt}). Pick a day and my calendar opens on it.`;
 
     $$("#slotGrid .slot").forEach((s) =>
       s.addEventListener("click", () => window.open(C.identity.calendly, "_blank", "noopener"))
@@ -1136,6 +1199,7 @@
   function boot() {
     try {
       initNav();
+      initBrandMark();
       initHero();
       initMetrics();
       initLogos();
