@@ -163,12 +163,34 @@
   function initBrandMark() {
     const src = C.identity.brandMark;
     if (!src) return;
+    const GRID = 3; // 3x3 shards
+
     const probe = new Image();
     probe.onload = () => {
       $$(".brand-mark").forEach((el) => {
-        el.style.setProperty("--brand-photo", `url("${src}")`);
         el.classList.add("has-photo");
         el.setAttribute("aria-label", C.identity.name);
+        el.innerHTML = "";
+
+        for (let i = 0; i < GRID * GRID; i++) {
+          const r = Math.floor(i / GRID);
+          const c = i % GRID;
+          const shard = document.createElement("i");
+          shard.className = "shard";
+          // Each shard shows one cell of the image, so together they rebuild the face
+          shard.style.backgroundImage = `url("${src}")`;
+          shard.style.setProperty("--c", c);
+          shard.style.setProperty("--r", r);
+          // Resting scatter: push each piece away from the centre, and give it a
+          // small tilt. Deterministic, so it never looks randomly different.
+          const ox = c - (GRID - 1) / 2;
+          const oy = r - (GRID - 1) / 2;
+          shard.style.setProperty("--dx", (ox * 1.7).toFixed(2) + "px");
+          shard.style.setProperty("--dy", (oy * 1.7).toFixed(2) + "px");
+          shard.style.setProperty("--rot", (((i * 37) % 9) - 4).toFixed(1) + "deg");
+          shard.style.setProperty("--delay", (i % 5) * 18 + "ms");
+          el.appendChild(shard);
+        }
       });
     };
     probe.src = src;

@@ -371,27 +371,43 @@ section { position: relative; }
   flex-shrink: 0;
   transition: transform var(--dur) var(--ease-spring), box-shadow var(--dur);
 }
-/* The mark is a cut-out of his head with the background removed, floating
-   rather than boxed. No circle, no card, no tile. It reads as a sticker of a
-   person instead of a placeholder monogram. */
+/* The mark is his head with the background cut out, split into a 3x3 grid of
+   shards. At rest the pieces sit slightly apart and tilted. On hover they snap
+   back into one clean face. No circle, no tile, no monogram. */
 .brand-mark.has-photo {
-  width: 44px; height: 44px;
+  width: 46px; height: 46px;
   background: none;
-  background-image: var(--brand-photo);
-  background-size: contain;
-  background-position: center bottom;
-  background-repeat: no-repeat;
   border-radius: 0;
   box-shadow: none;
   color: transparent;
   font-size: 0;
-  filter: drop-shadow(0 3px 6px rgba(0,0,0,0.55));
-  transform-origin: 50% 90%;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(3, 1fr);
+  /* the base .brand-mark centres its child, which would collapse empty shards */
+  place-items: stretch;
+  overflow: visible;
+  filter: drop-shadow(0 3px 7px rgba(0,0,0,0.6));
+  transition: filter var(--dur) var(--ease-out);
 }
-/* A small lift and tilt on hover. Enough to feel alive, not enough to annoy. */
-.brand:hover .brand-mark.has-photo {
-  transform: translateY(-2px) rotate(-4deg) scale(1.06);
-  filter: drop-shadow(0 6px 12px rgba(59,130,246,0.45));
+.brand-mark .shard {
+  display: block;
+  background-image: inherit;
+  background-repeat: no-repeat;
+  /* 300% makes the image span all three cells, so each shard shows one ninth */
+  background-size: 300% 300%;
+  background-position: calc(var(--c) * 50%) calc(var(--r) * 50%);
+  transform: translate(var(--dx), var(--dy)) rotate(var(--rot));
+  transition: transform 460ms var(--ease-spring);
+  transition-delay: var(--delay);
+  will-change: transform;
+}
+/* Hovering the name pulls the face together */
+.brand:hover .brand-mark.has-photo { filter: drop-shadow(0 5px 12px rgba(59,130,246,0.5)); }
+.brand:hover .shard { transform: translate(0, 0) rotate(0deg); }
+
+@media (prefers-reduced-motion: reduce) {
+  .brand-mark .shard { transform: none !important; }
 }
 .brand-text { display: flex; flex-direction: column; line-height: 1.15; }
 .brand-name { font-size: 0.95rem; }
@@ -3260,12 +3276,34 @@ window.CONTENT = CONTENT;
   function initBrandMark() {
     const src = C.identity.brandMark;
     if (!src) return;
+    const GRID = 3; // 3x3 shards
+
     const probe = new Image();
     probe.onload = () => {
       $$(".brand-mark").forEach((el) => {
-        el.style.setProperty("--brand-photo", `url("${src}")`);
         el.classList.add("has-photo");
         el.setAttribute("aria-label", C.identity.name);
+        el.innerHTML = "";
+
+        for (let i = 0; i < GRID * GRID; i++) {
+          const r = Math.floor(i / GRID);
+          const c = i % GRID;
+          const shard = document.createElement("i");
+          shard.className = "shard";
+          // Each shard shows one cell of the image, so together they rebuild the face
+          shard.style.backgroundImage = `url("${src}")`;
+          shard.style.setProperty("--c", c);
+          shard.style.setProperty("--r", r);
+          // Resting scatter: push each piece away from the centre, and give it a
+          // small tilt. Deterministic, so it never looks randomly different.
+          const ox = c - (GRID - 1) / 2;
+          const oy = r - (GRID - 1) / 2;
+          shard.style.setProperty("--dx", (ox * 1.7).toFixed(2) + "px");
+          shard.style.setProperty("--dy", (oy * 1.7).toFixed(2) + "px");
+          shard.style.setProperty("--rot", (((i * 37) % 9) - 4).toFixed(1) + "deg");
+          shard.style.setProperty("--delay", (i % 5) * 18 + "ms");
+          el.appendChild(shard);
+        }
       });
     };
     probe.src = src;
