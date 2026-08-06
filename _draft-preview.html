@@ -9,13 +9,14 @@
    1. DESIGN TOKENS
    -------------------------------------------------------------------------- */
 :root {
-  /* Surfaces — layered dark */
-  --bg:            #0A0A0B;
-  --bg-elev-1:     #101012;
-  --bg-elev-2:     #16161A;
-  --bg-elev-3:     #1C1C21;
-  --bg-glass:      rgba(22, 22, 26, 0.72);
-  --bg-glass-hi:   rgba(28, 28, 33, 0.85);
+  /* Surfaces. Slate rather than black: a hint of blue in the neutrals reads as
+     chosen instead of switched off, and it gives the accent something to sit on. */
+  --bg:            #14161D;
+  --bg-elev-1:     #1A1D26;
+  --bg-elev-2:     #21252F;
+  --bg-elev-3:     #2A2F3B;
+  --bg-glass:      rgba(33, 37, 47, 0.72);
+  --bg-glass-hi:   rgba(42, 47, 59, 0.85);
 
   /* Text */
   --fg:            #FAFAFA;
@@ -40,10 +41,10 @@
   --danger-soft:   rgba(239, 68, 68, 0.12);
   --warning:       #F59E0B;
 
-  /* Borders */
-  --border:        rgba(255, 255, 255, 0.08);
-  --border-hi:     rgba(255, 255, 255, 0.14);
-  --border-accent: rgba(59, 130, 246, 0.4);
+  /* Borders. Slightly stronger than before so edges still read on lighter ground */
+  --border:        rgba(255, 255, 255, 0.10);
+  --border-hi:     rgba(255, 255, 255, 0.17);
+  --border-accent: rgba(59, 130, 246, 0.45);
 
   /* Typography */
   --font-display: system-ui, -apple-system, "Segoe UI Variable Display", "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
@@ -224,8 +225,8 @@ section { position: relative; }
   z-index: 0;
   opacity: 0.5;
 }
-.glow-a { width: 620px; height: 620px; background: rgba(37, 99, 235, 0.16); }
-.glow-b { width: 480px; height: 480px; background: rgba(77, 124, 255, 0.10); }
+.glow-a { width: 620px; height: 620px; background: rgba(37, 99, 235, 0.24); }
+.glow-b { width: 480px; height: 480px; background: rgba(77, 124, 255, 0.16); }
 
 /* Grid texture overlay */
 .grid-bg {
@@ -338,7 +339,7 @@ section { position: relative; }
   border-bottom: 1px solid transparent;
 }
 .nav.scrolled {
-  background: rgba(10, 10, 11, 0.82);
+  background: rgba(20, 22, 29, 0.82);
   backdrop-filter: blur(20px) saturate(180%);
   -webkit-backdrop-filter: blur(20px) saturate(180%);
   border-bottom-color: var(--border);
@@ -422,7 +423,7 @@ section { position: relative; }
 .nav-mobile {
   position: fixed;
   inset: var(--nav-h) 0 0 0;
-  background: rgba(10,10,11,0.97);
+  background: rgba(20,22,29,0.97);
   backdrop-filter: blur(24px);
   -webkit-backdrop-filter: blur(24px);
   z-index: 199;
@@ -571,7 +572,7 @@ section { position: relative; }
 .portrait-wrap::after {
   content: "";
   position: absolute; inset: 0;
-  background: linear-gradient(to top, rgba(10,10,11,0.55) 0%, transparent 30%);
+  background: linear-gradient(to top, rgba(20,22,29,0.55) 0%, transparent 30%);
   pointer-events: none;
 }
 .portrait-wrap img { width: 100%; height: 100%; object-fit: cover; object-position: center 18%; }
@@ -969,7 +970,7 @@ section { position: relative; }
   top: 14px; left: 14px;
   padding: 6px 12px;
   border-radius: var(--r-full);
-  background: rgba(10,10,11,0.75);
+  background: rgba(20,22,29,0.75);
   backdrop-filter: blur(10px);
   border: 1px solid var(--border-hi);
   font-size: 0.72rem;
@@ -981,7 +982,7 @@ section { position: relative; }
   top: 14px; right: 14px;
   width: 34px; height: 34px;
   border-radius: 50%;
-  background: rgba(10,10,11,0.75);
+  background: rgba(20,22,29,0.75);
   backdrop-filter: blur(10px);
   border: 1px solid var(--border-hi);
   display: grid; place-items: center;
@@ -1033,7 +1034,7 @@ section { position: relative; }
 .modal-backdrop {
   position: fixed;
   inset: 0;
-  background: rgba(5,5,6,0.86);
+  background: rgba(12,13,18,0.86);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   z-index: 300;
@@ -1072,7 +1073,7 @@ section { position: relative; }
   top: 18px; right: 18px;
   width: 42px; height: 42px;
   border-radius: 50%;
-  background: rgba(10,10,11,0.7);
+  background: rgba(20,22,29,0.7);
   border: 1px solid var(--border-hi);
   display: grid; place-items: center;
   color: var(--fg-muted);
@@ -1463,6 +1464,22 @@ section { position: relative; }
 .edu-card p { font-size: 0.86rem; color: var(--fg-muted); }
 
 /* Video */
+/* Intro section: copy on the left, vertical video on the right.
+   overflow:hidden so the ambient glow can sit outside the container
+   without widening the page. */
+#intro { overflow: hidden; }
+.intro-grid {
+  display: grid;
+  grid-template-columns: 1fr 340px;
+  gap: clamp(32px, 6vw, 80px);
+  align-items: center;
+}
+.intro-grid > * { min-width: 0; }
+@media (max-width: 900px) {
+  .intro-grid { grid-template-columns: 1fr; }
+  .intro-video { max-width: 320px; margin-inline: auto; }
+}
+
 /* Vertical 9:16 intro video, capped so it doesn't tower over the column */
 .video-card {
   border: 1px solid var(--border-hi); border-radius: var(--r-xl);
@@ -1940,6 +1957,30 @@ section { position: relative; }
   </div>
 </section>
 
+<!-- ====================== VIDEO INTRO ====================== -->
+<section class="section-pad" id="intro">
+  <div class="glow glow-b" style="top:-120px;right:-120px;"></div>
+  <div class="container rel">
+    <div class="intro-grid">
+      <div class="reveal">
+        <span class="eyebrow">Say hello</span>
+        <h2 class="h-section" id="introHeading"></h2>
+        <p class="lede" id="introBlurb" style="margin-top:var(--space-4)"></p>
+        <div class="hero-actions" style="margin-top:var(--space-6)">
+          <a class="btn btn-primary js-calendly" href="#" target="_blank" rel="noopener">Book a free call</a>
+          <a class="btn btn-ghost" href="#services">What I do</a>
+        </div>
+      </div>
+
+      <div class="reveal intro-video">
+        <div class="video-card">
+          <div class="video-frame" id="videoFrame"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
 <!-- ====================== SERVICES ====================== -->
 <section class="section-pad" id="services">
   <div class="container">
@@ -2056,27 +2097,22 @@ section { position: relative; }
         <h2 class="h-section" id="aboutHeading" style="margin-bottom:var(--space-6)"></h2>
         <div class="about-body" id="aboutBody"></div>
 
-        <h5 class="mono" style="color:var(--fg-muted);margin-top:var(--space-7)">Industries I have worked in</h5>
-        <div class="expertise-grid" id="industriesGrid"></div>
-
-        <h5 class="mono" style="color:var(--fg-muted);margin-top:var(--space-7)">Where I go deep</h5>
-        <div class="expertise-grid" id="expertiseGrid"></div>
-
         <div class="edu-card" id="eduCard"></div>
         <div id="resumeCta" style="margin-top:var(--space-5)"></div>
       </div>
 
       <div class="reveal">
-        <div class="video-card">
-          <div class="video-frame" id="videoFrame"></div>
-          <div class="video-caption" id="videoCaption"></div>
-        </div>
+        <h5 class="mono" style="color:var(--fg-muted)">Industries I have worked in</h5>
+        <div class="expertise-grid" id="industriesGrid"></div>
 
-        <h5 class="mono" style="color:var(--fg-muted);margin-top:var(--space-7)">Tools I work in daily</h5>
-        <div class="tools-marquee">
-          <div class="tools-track" id="toolsTrack"></div>
-        </div>
+        <h5 class="mono" style="color:var(--fg-muted);margin-top:var(--space-7)">Where I go deep</h5>
+        <div class="expertise-grid" id="expertiseGrid"></div>
       </div>
+    </div>
+
+    <h5 class="mono" style="color:var(--fg-muted);margin-top:var(--space-8)">Tools I work in daily</h5>
+    <div class="tools-marquee">
+      <div class="tools-track" id="toolsTrack"></div>
     </div>
   </div>
 </section>
@@ -3924,7 +3960,10 @@ window.CONTENT = CONTENT;
           <div class="vp-note">Space reserved for your 90 second intro</div>
         </div>`;
     }
-    $("#videoCaption").innerHTML = `<h4>${esc(v.title)}</h4><p>${esc(v.blurb)}</p>`;
+    // The video now sits in its own section near the top, with the title and
+    // blurb beside it rather than captioned underneath.
+    $("#introHeading").textContent = v.title;
+    $("#introBlurb").textContent = v.blurb;
   }
 
   /* ------------------------------------------------------------------

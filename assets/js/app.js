@@ -882,7 +882,10 @@
           <div class="vp-note">Space reserved for your 90 second intro</div>
         </div>`;
     }
-    $("#videoCaption").innerHTML = `<h4>${esc(v.title)}</h4><p>${esc(v.blurb)}</p>`;
+    // The video now sits in its own section near the top, with the title and
+    // blurb beside it rather than captioned underneath.
+    $("#introHeading").textContent = v.title;
+    $("#introBlurb").textContent = v.blurb;
   }
 
   /* ------------------------------------------------------------------

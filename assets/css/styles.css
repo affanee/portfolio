@@ -7,13 +7,14 @@
    1. DESIGN TOKENS
    -------------------------------------------------------------------------- */
 :root {
-  /* Surfaces — layered dark */
-  --bg:            #0A0A0B;
-  --bg-elev-1:     #101012;
-  --bg-elev-2:     #16161A;
-  --bg-elev-3:     #1C1C21;
-  --bg-glass:      rgba(22, 22, 26, 0.72);
-  --bg-glass-hi:   rgba(28, 28, 33, 0.85);
+  /* Surfaces. Slate rather than black: a hint of blue in the neutrals reads as
+     chosen instead of switched off, and it gives the accent something to sit on. */
+  --bg:            #14161D;
+  --bg-elev-1:     #1A1D26;
+  --bg-elev-2:     #21252F;
+  --bg-elev-3:     #2A2F3B;
+  --bg-glass:      rgba(33, 37, 47, 0.72);
+  --bg-glass-hi:   rgba(42, 47, 59, 0.85);
 
   /* Text */
   --fg:            #FAFAFA;
@@ -38,10 +39,10 @@
   --danger-soft:   rgba(239, 68, 68, 0.12);
   --warning:       #F59E0B;
 
-  /* Borders */
-  --border:        rgba(255, 255, 255, 0.08);
-  --border-hi:     rgba(255, 255, 255, 0.14);
-  --border-accent: rgba(59, 130, 246, 0.4);
+  /* Borders. Slightly stronger than before so edges still read on lighter ground */
+  --border:        rgba(255, 255, 255, 0.10);
+  --border-hi:     rgba(255, 255, 255, 0.17);
+  --border-accent: rgba(59, 130, 246, 0.45);
 
   /* Typography */
   --font-display: "Inter Tight", "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
@@ -222,8 +223,8 @@ section { position: relative; }
   z-index: 0;
   opacity: 0.5;
 }
-.glow-a { width: 620px; height: 620px; background: rgba(37, 99, 235, 0.16); }
-.glow-b { width: 480px; height: 480px; background: rgba(77, 124, 255, 0.10); }
+.glow-a { width: 620px; height: 620px; background: rgba(37, 99, 235, 0.24); }
+.glow-b { width: 480px; height: 480px; background: rgba(77, 124, 255, 0.16); }
 
 /* Grid texture overlay */
 .grid-bg {
@@ -336,7 +337,7 @@ section { position: relative; }
   border-bottom: 1px solid transparent;
 }
 .nav.scrolled {
-  background: rgba(10, 10, 11, 0.82);
+  background: rgba(20, 22, 29, 0.82);
   backdrop-filter: blur(20px) saturate(180%);
   -webkit-backdrop-filter: blur(20px) saturate(180%);
   border-bottom-color: var(--border);
@@ -420,7 +421,7 @@ section { position: relative; }
 .nav-mobile {
   position: fixed;
   inset: var(--nav-h) 0 0 0;
-  background: rgba(10,10,11,0.97);
+  background: rgba(20,22,29,0.97);
   backdrop-filter: blur(24px);
   -webkit-backdrop-filter: blur(24px);
   z-index: 199;
@@ -569,7 +570,7 @@ section { position: relative; }
 .portrait-wrap::after {
   content: "";
   position: absolute; inset: 0;
-  background: linear-gradient(to top, rgba(10,10,11,0.55) 0%, transparent 30%);
+  background: linear-gradient(to top, rgba(20,22,29,0.55) 0%, transparent 30%);
   pointer-events: none;
 }
 .portrait-wrap img { width: 100%; height: 100%; object-fit: cover; object-position: center 18%; }
@@ -967,7 +968,7 @@ section { position: relative; }
   top: 14px; left: 14px;
   padding: 6px 12px;
   border-radius: var(--r-full);
-  background: rgba(10,10,11,0.75);
+  background: rgba(20,22,29,0.75);
   backdrop-filter: blur(10px);
   border: 1px solid var(--border-hi);
   font-size: 0.72rem;
@@ -979,7 +980,7 @@ section { position: relative; }
   top: 14px; right: 14px;
   width: 34px; height: 34px;
   border-radius: 50%;
-  background: rgba(10,10,11,0.75);
+  background: rgba(20,22,29,0.75);
   backdrop-filter: blur(10px);
   border: 1px solid var(--border-hi);
   display: grid; place-items: center;
@@ -1031,7 +1032,7 @@ section { position: relative; }
 .modal-backdrop {
   position: fixed;
   inset: 0;
-  background: rgba(5,5,6,0.86);
+  background: rgba(12,13,18,0.86);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   z-index: 300;
@@ -1070,7 +1071,7 @@ section { position: relative; }
   top: 18px; right: 18px;
   width: 42px; height: 42px;
   border-radius: 50%;
-  background: rgba(10,10,11,0.7);
+  background: rgba(20,22,29,0.7);
   border: 1px solid var(--border-hi);
   display: grid; place-items: center;
   color: var(--fg-muted);
@@ -1461,6 +1462,22 @@ section { position: relative; }
 .edu-card p { font-size: 0.86rem; color: var(--fg-muted); }
 
 /* Video */
+/* Intro section: copy on the left, vertical video on the right.
+   overflow:hidden so the ambient glow can sit outside the container
+   without widening the page. */
+#intro { overflow: hidden; }
+.intro-grid {
+  display: grid;
+  grid-template-columns: 1fr 340px;
+  gap: clamp(32px, 6vw, 80px);
+  align-items: center;
+}
+.intro-grid > * { min-width: 0; }
+@media (max-width: 900px) {
+  .intro-grid { grid-template-columns: 1fr; }
+  .intro-video { max-width: 320px; margin-inline: auto; }
+}
+
 /* Vertical 9:16 intro video, capped so it doesn't tower over the column */
 .video-card {
   border: 1px solid var(--border-hi); border-radius: var(--r-xl);
