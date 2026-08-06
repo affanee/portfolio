@@ -174,14 +174,11 @@
     $("#heroPrimary").href = C.identity.calendly;
     $("#heroSecondary").innerHTML = esc(h.secondaryCta);
 
-    $("#heroTrust").innerHTML = `${I.globe}<span>${esc(C.identity.timezone)}</span>`;
-
     // Portrait with graceful fallback
     const pw = $("#portrait");
     const img = new Image();
     img.onload = () => {
       pw.innerHTML = `<img src="${esc(C.identity.photo)}" alt="${esc(C.identity.name)}, ${esc(C.identity.role)}" width="800" height="1000">`;
-      addFloatCard(pw);
     };
     img.onerror = () => {
       pw.innerHTML = `
@@ -189,17 +186,8 @@
           <div class="mono-initials">${esc(C.identity.initials)}</div>
           <div class="hint">Save your photo to<br>assets/img/affan.jpg</div>
         </div>`;
-      addFloatCard(pw);
     };
     img.src = C.identity.photo;
-
-    function addFloatCard(parent) {
-      const m = C.hero.metrics[0];
-      const card = document.createElement("div");
-      card.className = "float-card";
-      card.innerHTML = `<div class="fc-val">${m.value.toLocaleString()}${esc(m.suffix)}</div><div class="fc-lab">${esc(m.label)}</div>`;
-      parent.parentElement.appendChild(card);
-    }
   }
 
   /* ------------------------------------------------------------------
@@ -927,27 +915,27 @@
      ------------------------------------------------------------------ */
   function initBooking() {
     const grid = $("#slotGrid");
+    const av = (C.contact && C.contact.availability) || {};
     const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
     const today = new Date();
     let html = "";
-    let added = 0;
-    let offset = 1;
 
-    while (added < 6 && offset < 20) {
+    // Next six days, weekends included, each showing the real window for that
+    // day rather than a made up count of free slots.
+    for (let offset = 1; offset <= 6; offset++) {
       const d = new Date(today);
       d.setDate(today.getDate() + offset);
-      offset++;
       const dow = d.getDay();
-      if (dow === 0 || dow === 6) continue; // weekdays only
-      const open = ((d.getDate() + dow) % 3) + 1; // deterministic, varies by date
-      added++;
+      const isWeekend = dow === 0 || dow === 6;
+      const hours = (isWeekend ? av.weekends : av.weekdays) || [];
       html += `<button class="slot" data-date="${d.toDateString()}">
           <span class="slot-day">${days[dow]}</span>
           <span class="slot-date">${d.getDate()} ${d.toLocaleString("en", { month: "short" })}</span>
-          <span class="slot-count">${open} slot${open > 1 ? "s" : ""}</span>
+          <span class="slot-hours">${hours.map((h) => `<span>${esc(h)}</span>`).join("")}</span>
         </button>`;
     }
     grid.innerHTML = html;
+    if (av.timezoneNote) $("#slotNote").textContent = av.timezoneNote;
 
     $$("#slotGrid .slot").forEach((s) =>
       s.addEventListener("click", () => window.open(C.identity.calendly, "_blank", "noopener"))

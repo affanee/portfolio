@@ -545,16 +545,6 @@ section { position: relative; }
   to   { transform: translateY(0); opacity: 1; }
 }
 
-.hero-trust {
-  margin-top: var(--space-6);
-  display: flex;
-  align-items: center;
-  gap: var(--space-4);
-  color: var(--fg-dim);
-  font-size: 0.85rem;
-  animation: fadeUp 0.9s var(--ease-out) 0.62s backwards;
-}
-.hero-trust svg { width: 16px; height: 16px; color: var(--accent-hi); }
 
 /* Hero portrait */
 .hero-visual { position: relative; animation: fadeUp 1s var(--ease-out) 0.35s backwards; }
@@ -604,33 +594,10 @@ section { position: relative; }
   line-height: 1.5;
 }
 
-/* Floating stat card over portrait */
-.float-card {
-  position: absolute;
-  left: -28px; bottom: 46px;
-  background: var(--bg-glass-hi);
-  backdrop-filter: blur(20px) saturate(180%);
-  -webkit-backdrop-filter: blur(20px) saturate(180%);
-  border: 1px solid var(--border-hi);
-  border-radius: var(--r-lg);
-  padding: 15px 19px;
-  box-shadow: var(--shadow-lg);
-  animation: bob 5s ease-in-out infinite;
-  z-index: 2;
-}
 @keyframes bob {
   0%, 100% { transform: translateY(0); }
   50%      { transform: translateY(-9px); }
 }
-.float-card .fc-val {
-  font-family: var(--font-display);
-  font-size: 1.55rem;
-  font-weight: 650;
-  letter-spacing: -0.03em;
-  color: var(--accent-hi);
-  line-height: 1;
-}
-.float-card .fc-lab { font-size: 0.73rem; color: var(--fg-muted); margin-top: 4px; }
 
 /* Hero metrics strip */
 .metrics-strip {
@@ -1664,23 +1631,39 @@ section { position: relative; }
 .booking-card h4 { font-size: 1.1rem; margin-bottom: 8px; }
 .booking-card > p { font-size: 0.88rem; color: var(--fg-muted); line-height: 1.6; margin-bottom: var(--space-5); }
 
-.slot-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(96px, 1fr)); gap: 8px; margin-bottom: var(--space-5); }
+.slot-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(96px, 1fr)); gap: 8px; margin-bottom: var(--space-4); }
 .slot {
-  padding: 11px 8px;
+  padding: 11px 6px;
   border: 1px solid var(--border);
   border-radius: var(--r-sm);
   background: rgba(255,255,255,0.03);
   text-align: center;
   transition: all var(--dur) var(--ease-out);
-  min-height: 56px;
-  display: flex; flex-direction: column; justify-content: center; gap: 2px;
+  min-height: 78px;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px;
 }
 .slot:hover:not(:disabled) { border-color: var(--accent); background: var(--accent-soft); transform: translateY(-2px); }
 .slot:disabled { opacity: 0.32; cursor: not-allowed; }
 .slot-day { font-family: var(--font-mono); font-size: 0.62rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--fg-dim); }
 .slot-date { font-size: 0.92rem; font-weight: 600; color: var(--fg); }
-.slot-count { font-size: 0.66rem; color: var(--success); }
-.slot:disabled .slot-count { color: var(--fg-faint); }
+/* Each availability window on its own line so it stays readable in a narrow tile */
+.slot-hours { display: flex; flex-direction: column; gap: 1px; margin-top: 3px; }
+.slot-hours span {
+  font-family: var(--font-mono);
+  font-size: 0.63rem;
+  letter-spacing: 0.01em;
+  color: #6EE7B7;
+  white-space: nowrap;
+}
+.slot:disabled .slot-hours span { color: var(--fg-faint); }
+
+.slot-note {
+  font-size: 0.78rem;
+  color: var(--fg-dim);
+  line-height: 1.5;
+  margin-bottom: var(--space-5);
+  text-align: center;
+}
 
 .response-promise {
   display: flex; align-items: center; gap: 10px;
@@ -1795,7 +1778,6 @@ section { position: relative; }
 @media (max-width: 1080px) {
   .hero-grid { grid-template-columns: 1fr; }
   .hero-visual { max-width: 400px; }
-  .float-card { left: auto; right: -14px; }
   .calc-wrap, .contact-grid, .about-grid { grid-template-columns: 1fr; }
   .calc-result { position: static; }
   .metrics-strip { grid-template-columns: repeat(2, 1fr); }
@@ -1826,8 +1808,6 @@ section { position: relative; }
   :root { --nav-h: 64px; }
   .hero { min-height: auto; padding-top: calc(var(--nav-h) + 48px); }
   .hero-visual { max-width: 100%; }
-  .float-card { right: 10px; bottom: 20px; padding: 12px 15px; }
-  .float-card .fc-val { font-size: 1.3rem; }
   .metrics-strip { grid-template-columns: 1fr; }
   .services-grid, .work-grid, .tiers-grid, .testi-grid { grid-template-columns: 1fr; }
   .form-row { grid-template-columns: 1fr; }
@@ -1936,8 +1916,6 @@ section { position: relative; }
           <a class="btn btn-primary btn-lg" id="heroPrimary" href="#" target="_blank" rel="noopener"></a>
           <a class="btn btn-ghost btn-lg" id="heroSecondary" href="#work"></a>
         </div>
-
-        <div class="hero-trust" id="heroTrust"></div>
       </div>
 
       <div class="hero-visual">
@@ -2208,6 +2186,7 @@ section { position: relative; }
           <h4>Next available slots</h4>
           <p>Free 30 minutes, no pitch. Pick a day and my calendar opens with the exact times.</p>
           <div class="slot-grid" id="slotGrid"></div>
+          <p class="slot-note" id="slotNote"></p>
           <a class="btn btn-primary btn-block js-calendly" href="#" target="_blank" rel="noopener">
             See all available times
           </a>
@@ -2316,6 +2295,7 @@ const CONTENT = {
     phone: "+880 1814 648788",
     phoneHref: "+8801814648788",
     location: "Dhaka, Bangladesh. Working with teams in the US, UK, EU and APAC.",
+    // Not shown on the page right now. Kept in case you want it back somewhere.
     timezone: "GMT+6. I overlap with US mornings and EU afternoons.",
     linkedin: "https://www.linkedin.com/in/affan-bin-emran/",
     website: "https://affanofficial.com/",
@@ -2612,7 +2592,7 @@ const CONTENT = {
   /* ==========================================================================
      8. CASE STUDIES
      ====================================================================== */
-  workHeading: "The work, and what it moved",
+  workHeading: "The work, and what it changes for you",
   workSubhead:
     "Filter by what you are dealing with. Every number here came from real work. Open any one to see how it was done.",
 
@@ -3021,6 +3001,15 @@ const CONTENT = {
     ],
 
     responsePromise: "Every message gets a real reply within one working day.",
+
+    // When you are open for calls. Each string is shown on its own line inside
+    // the day tile, so keep them short.
+    availability: {
+      weekdays: ["7–9am", "6–8pm"],
+      weekends: ["9am–5pm"],
+      timezoneNote:
+        "All times GMT. Pick a day and my calendar shows the exact times in your own timezone.",
+    },
   },
 
   /* ==========================================================================
@@ -3252,14 +3241,11 @@ window.CONTENT = CONTENT;
     $("#heroPrimary").href = C.identity.calendly;
     $("#heroSecondary").innerHTML = esc(h.secondaryCta);
 
-    $("#heroTrust").innerHTML = `${I.globe}<span>${esc(C.identity.timezone)}</span>`;
-
     // Portrait with graceful fallback
     const pw = $("#portrait");
     const img = new Image();
     img.onload = () => {
       pw.innerHTML = `<img src="${esc(C.identity.photo)}" alt="${esc(C.identity.name)}, ${esc(C.identity.role)}" width="800" height="1000">`;
-      addFloatCard(pw);
     };
     img.onerror = () => {
       pw.innerHTML = `
@@ -3267,17 +3253,8 @@ window.CONTENT = CONTENT;
           <div class="mono-initials">${esc(C.identity.initials)}</div>
           <div class="hint">Portrait photo<br>drops in here</div>
         </div>`;
-      addFloatCard(pw);
     };
     img.src = C.identity.photo;
-
-    function addFloatCard(parent) {
-      const m = C.hero.metrics[0];
-      const card = document.createElement("div");
-      card.className = "float-card";
-      card.innerHTML = `<div class="fc-val">${m.value.toLocaleString()}${esc(m.suffix)}</div><div class="fc-lab">${esc(m.label)}</div>`;
-      parent.parentElement.appendChild(card);
-    }
   }
 
   /* ------------------------------------------------------------------
@@ -4005,27 +3982,27 @@ window.CONTENT = CONTENT;
      ------------------------------------------------------------------ */
   function initBooking() {
     const grid = $("#slotGrid");
+    const av = (C.contact && C.contact.availability) || {};
     const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
     const today = new Date();
     let html = "";
-    let added = 0;
-    let offset = 1;
 
-    while (added < 6 && offset < 20) {
+    // Next six days, weekends included, each showing the real window for that
+    // day rather than a made up count of free slots.
+    for (let offset = 1; offset <= 6; offset++) {
       const d = new Date(today);
       d.setDate(today.getDate() + offset);
-      offset++;
       const dow = d.getDay();
-      if (dow === 0 || dow === 6) continue; // weekdays only
-      const open = ((d.getDate() + dow) % 3) + 1; // deterministic, varies by date
-      added++;
+      const isWeekend = dow === 0 || dow === 6;
+      const hours = (isWeekend ? av.weekends : av.weekdays) || [];
       html += `<button class="slot" data-date="${d.toDateString()}">
           <span class="slot-day">${days[dow]}</span>
           <span class="slot-date">${d.getDate()} ${d.toLocaleString("en", { month: "short" })}</span>
-          <span class="slot-count">${open} slot${open > 1 ? "s" : ""}</span>
+          <span class="slot-hours">${hours.map((h) => `<span>${esc(h)}</span>`).join("")}</span>
         </button>`;
     }
     grid.innerHTML = html;
+    if (av.timezoneNote) $("#slotNote").textContent = av.timezoneNote;
 
     $$("#slotGrid .slot").forEach((s) =>
       s.addEventListener("click", () => window.open(C.identity.calendly, "_blank", "noopener"))

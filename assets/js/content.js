@@ -29,6 +29,7 @@ const CONTENT = {
     phone: "+880 1814 648788",
     phoneHref: "+8801814648788",
     location: "Dhaka, Bangladesh. Working with teams in the US, UK, EU and APAC.",
+    // Not shown on the page right now. Kept in case you want it back somewhere.
     timezone: "GMT+6. I overlap with US mornings and EU afternoons.",
     linkedin: "https://www.linkedin.com/in/affan-bin-emran/",
     website: "https://affanofficial.com/",
@@ -325,7 +326,7 @@ const CONTENT = {
   /* ==========================================================================
      8. CASE STUDIES
      ====================================================================== */
-  workHeading: "The work, and what it moved",
+  workHeading: "The work, and what it changes for you",
   workSubhead:
     "Filter by what you are dealing with. Every number here came from real work. Open any one to see how it was done.",
 
@@ -734,6 +735,15 @@ const CONTENT = {
     ],
 
     responsePromise: "Every message gets a real reply within one working day.",
+
+    // When you are open for calls. Each string is shown on its own line inside
+    // the day tile, so keep them short.
+    availability: {
+      weekdays: ["7–9am", "6–8pm"],
+      weekends: ["9am–5pm"],
+      timezoneNote:
+        "All times GMT. Pick a day and my calendar shows the exact times in your own timezone.",
+    },
   },
 
   /* ==========================================================================
