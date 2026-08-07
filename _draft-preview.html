@@ -1514,13 +1514,16 @@ section { position: relative; }
 .video-card {
   border: 1px solid var(--border-hi); border-radius: var(--r-xl);
   overflow: hidden; background: var(--bg-elev-1); box-shadow: var(--shadow-lg);
-  max-width: 360px; margin-inline: auto;
+  /* narrower than its column, so the page shows either side of the video */
+  max-width: 320px; margin-inline: auto;
 }
-.video-frame { position: relative; aspect-ratio: 9 / 16; background: #000; }
+/* The frame takes the video's own ratio, set from the file's real dimensions
+   once its metadata loads. 9/16 is only the placeholder default. */
+.video-frame { position: relative; aspect-ratio: var(--video-ratio, 9 / 16); background: #000; }
 .video-frame iframe, .video-frame video { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
-/* Source is slightly taller than 9:16, so contain it rather than let the
-   default stretch it. Thin bars beat a distorted face. */
-.video-frame video { object-fit: contain; background: #000; }
+/* The frame already matches the video's ratio, so cover fills it exactly with
+   nothing cropped and no letterboxing. */
+.video-frame video { object-fit: cover; }
 .video-placeholder {
   position: absolute; inset: 0;
   display: grid; place-items: center;
@@ -4075,8 +4078,16 @@ window.CONTENT = CONTENT;
       frame.innerHTML = `<iframe src="https://player.vimeo.com/video/${esc(v.id)}"
         title="${esc(v.title)}" allow="fullscreen; picture-in-picture" allowfullscreen loading="lazy"></iframe>`;
     } else if (v.type === "file") {
-      frame.innerHTML = `<video controls preload="metadata"${v.poster ? ` poster="${esc(v.poster)}"` : ""}>
+      frame.innerHTML = `<video controls preload="metadata" playsinline${v.poster ? ` poster="${esc(v.poster)}"` : ""}>
         <source src="${esc(v.src)}" type="video/mp4">Your browser does not support video playback.</video>`;
+      // Size the frame to the video's own dimensions, so there is never a
+      // letterbox bar. Works for whatever file is dropped in later.
+      const el = frame.querySelector("video");
+      el.addEventListener("loadedmetadata", () => {
+        if (el.videoWidth && el.videoHeight) {
+          frame.style.setProperty("--video-ratio", `${el.videoWidth} / ${el.videoHeight}`);
+        }
+      });
     } else {
       frame.innerHTML = `
         <div class="video-placeholder">

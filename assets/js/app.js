@@ -929,8 +929,16 @@
       frame.innerHTML = `<iframe src="https://player.vimeo.com/video/${esc(v.id)}"
         title="${esc(v.title)}" allow="fullscreen; picture-in-picture" allowfullscreen loading="lazy"></iframe>`;
     } else if (v.type === "file") {
-      frame.innerHTML = `<video controls preload="metadata"${v.poster ? ` poster="${esc(v.poster)}"` : ""}>
+      frame.innerHTML = `<video controls preload="metadata" playsinline${v.poster ? ` poster="${esc(v.poster)}"` : ""}>
         <source src="${esc(v.src)}" type="video/mp4">Your browser does not support video playback.</video>`;
+      // Size the frame to the video's own dimensions, so there is never a
+      // letterbox bar. Works for whatever file is dropped in later.
+      const el = frame.querySelector("video");
+      el.addEventListener("loadedmetadata", () => {
+        if (el.videoWidth && el.videoHeight) {
+          frame.style.setProperty("--video-ratio", `${el.videoWidth} / ${el.videoHeight}`);
+        }
+      });
     } else {
       frame.innerHTML = `
         <div class="video-placeholder">
