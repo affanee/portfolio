@@ -369,6 +369,29 @@ section { position: relative; }
   flex-shrink: 0;
   transition: transform var(--dur) var(--ease-spring), box-shadow var(--dur);
 }
+/* Funnel mark. No tile behind it, the glyph is the logo. On hover the bars
+   step down in sequence, like a deal moving through the stages. */
+.brand-mark.has-logo {
+  width: 40px; height: 40px;
+  background: none;
+  border-radius: 0;
+  box-shadow: none;
+  color: transparent;
+  font-size: 0;
+  /* stretch, not center: a centred grid item sizes to content, and an SVG at
+     width:100% then has nothing to resolve against and collapses to zero */
+  place-items: stretch;
+}
+.brand-mark.has-logo svg { width: 100%; height: 100%; display: block; overflow: visible; }
+.brand-mark .bm-bar {
+  transform-box: fill-box;
+  transform-origin: center;
+  transition: transform 380ms var(--ease-spring), opacity 380ms var(--ease-out);
+}
+.brand:hover .bm-bar:nth-of-type(1) { transform: translateY(1.5px) scaleX(0.92); }
+.brand:hover .bm-bar:nth-of-type(2) { transform: translateY(0.5px); transition-delay: 60ms; }
+.brand:hover .bm-bar:nth-of-type(3) { transform: translateY(-1.5px) scaleX(1.14); transition-delay: 120ms; }
+
 /* The mark is his head with the background cut out, split into a 3x3 grid of
    shards. At rest the pieces sit slightly apart and tilted. On hover they snap
    back into one clean face. No circle, no tile, no monogram. */
@@ -1493,6 +1516,9 @@ section { position: relative; }
 }
 .video-frame { position: relative; aspect-ratio: 9 / 16; background: #000; }
 .video-frame iframe, .video-frame video { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+/* Source is slightly taller than 9:16, so contain it rather than let the
+   default stretch it. Thin bars beat a distorted face. */
+.video-frame video { object-fit: contain; background: #000; }
 .video-placeholder {
   position: absolute; inset: 0;
   display: grid; place-items: center;

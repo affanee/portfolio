@@ -158,9 +158,40 @@
   /* ------------------------------------------------------------------
      HERO
      ------------------------------------------------------------------ */
-  // Swap the "AE" initials for the cut-out head mark, but only once the file is
-  // confirmed to load, so a missing image leaves the initials in place.
+  /* The funnel mark. Three bars narrowing as they descend and growing more
+     solid, which is what a pipeline does: wide and uncertain at the top,
+     narrow and committed at the bottom. Drawn rather than photographed so it
+     works as a favicon and at any size. */
+  function funnelMarkSVG(uid) {
+    return `
+      <svg viewBox="0 0 32 32" fill="none" aria-hidden="true" focusable="false">
+        <defs>
+          <linearGradient id="bm${uid}" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#93B4FF"/>
+            <stop offset="1" stop-color="#2563EB"/>
+          </linearGradient>
+        </defs>
+        <rect class="bm-bar" x="2"  y="6"    width="28" height="5.5" rx="2.75" fill="url(#bm${uid})" opacity=".42"/>
+        <rect class="bm-bar" x="6"  y="13.5" width="20" height="5.5" rx="2.75" fill="url(#bm${uid})" opacity=".7"/>
+        <rect class="bm-bar" x="10" y="21"   width="12" height="5.5" rx="2.75" fill="url(#bm${uid})"/>
+      </svg>`;
+  }
+
   function initBrandMark() {
+    const style = C.identity.brandStyle || "shatter";
+    if (style === "initials") return;
+
+    if (style === "logo") {
+      $$(".brand-mark").forEach((el, i) => {
+        el.classList.add("has-logo");
+        el.innerHTML = funnelMarkSVG(i);
+        el.setAttribute("aria-label", C.identity.name);
+      });
+      return;
+    }
+
+    // "shatter": the cut-out face, only once the file is confirmed to load, so
+    // a missing image leaves the initials in place.
     const src = C.identity.brandMark;
     if (!src) return;
     const GRID = 3; // 3x3 shards
@@ -1210,7 +1241,13 @@
 
     $$(".js-brand-name").forEach((e) => (e.textContent = C.identity.name));
     $$(".js-brand-role").forEach((e) => (e.textContent = C.identity.role));
-    $$(".js-initials").forEach((e) => (e.textContent = C.identity.initials));
+    // Only fill in initials where the mark has not already been replaced by the
+    // funnel logo or the shattered face, otherwise this wipes them out.
+    $$(".js-initials").forEach((e) => {
+      if (!e.classList.contains("has-logo") && !e.classList.contains("has-photo")) {
+        e.textContent = C.identity.initials;
+      }
+    });
     $$(".js-calendly").forEach((e) => (e.href = C.identity.calendly));
     $("#footerLocation").textContent = C.identity.location;
   }

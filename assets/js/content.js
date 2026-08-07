@@ -39,9 +39,16 @@ const CONTENT = {
     // If the file is missing, the site shows an initials monogram instead.
     photo: "assets/img/affan.jpg",
 
-    // The little mark beside your name in the header and footer. This is a
-    // cut-out of your head with the background removed, so it floats instead of
-    // sitting in a box. Set to "" to fall back to the "AE" initials.
+    /* The little mark beside your name in the header and footer.
+       "logo"    = a funnel symbol built for your niche. Three narrowing bars,
+                   getting more solid as they descend, like a pipeline closing.
+       "shatter" = your cut-out face split into nine pieces that snap together
+                   when someone hovers your name.
+       "initials"= the plain "AE" square.
+       Change this one word to switch. */
+    brandStyle: "logo",
+
+    // Image used when brandStyle is "shatter"
     brandMark: "assets/img/affan-head.png",
 
     resume: "assets/Affan-Bin-Emran-Resume.pdf",
@@ -95,7 +102,7 @@ const CONTENT = {
      Leave type as "none" to show the placeholder.
      ====================================================================== */
   video: {
-    type: "none", // ⚠️ REPLACE with "youtube" | "vimeo" | "file"
+    type: "file",
     id: "",
     src: "assets/video/intro.mp4",
     poster: "",
