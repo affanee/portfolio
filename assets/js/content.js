@@ -103,6 +103,11 @@ const CONTENT = {
      ====================================================================== */
   video: {
     type: "file",
+    // Starts playing on its own once the section scrolls into view, and pauses
+    // when it scrolls away. It has to start MUTED because every browser blocks
+    // autoplay with sound, so a "Tap for sound" button sits on the video.
+    // Set to false if you would rather visitors press play themselves.
+    autoplay: true,
     id: "",
     src: "assets/video/intro.mp4",
     poster: "",

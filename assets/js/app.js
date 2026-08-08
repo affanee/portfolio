@@ -37,6 +37,8 @@
     linkedin: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 3a2 2 0 012 2v14a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h14zM8.3 18.3v-7.4H6v7.4h2.3zM7.1 9.8a1.34 1.34 0 100-2.7 1.34 1.34 0 000 2.7zM18 18.3v-4.2c0-2.1-1.1-3.1-2.6-3.1-1.2 0-1.8.7-2.1 1.2v-1H11v7.1h2.3v-4c0-.2 0-.4.1-.6.2-.4.6-.9 1.3-.9.9 0 1.2.7 1.2 1.7v3.8H18z"/></svg>',
     globe: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a15 15 0 010 18 15 15 0 010-18z"/></svg>',
     play: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 4l14 8-14 8z"/></svg>',
+    volumeOff: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5L6 9H2v6h4l5 4z"/><path d="M22 9l-6 6M16 9l6 6"/></svg>',
+    volumeOn: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5L6 9H2v6h4l5 4z"/><path d="M15.5 8.5a5 5 0 010 7M18.5 5.5a9 9 0 010 13"/></svg>',
     alert: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16.5v.01"/></svg>',
     zap: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L4.5 13H12l-1 9 8.5-11H13l1-9z"/></svg>',
     shield: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>',
@@ -929,16 +931,21 @@
       frame.innerHTML = `<iframe src="https://player.vimeo.com/video/${esc(v.id)}"
         title="${esc(v.title)}" allow="fullscreen; picture-in-picture" allowfullscreen loading="lazy"></iframe>`;
     } else if (v.type === "file") {
-      frame.innerHTML = `<video controls preload="metadata" playsinline${v.poster ? ` poster="${esc(v.poster)}"` : ""}>
+      // metadata, not auto: the file is several MB and someone who never
+      // scrolls this far should not have to download it. play() pulls the rest.
+      frame.innerHTML = `<video controls preload="metadata" playsinline muted${v.poster ? ` poster="${esc(v.poster)}"` : ""}>
         <source src="${esc(v.src)}" type="video/mp4">Your browser does not support video playback.</video>`;
+      const el = frame.querySelector("video");
+
       // Size the frame to the video's own dimensions, so there is never a
       // letterbox bar. Works for whatever file is dropped in later.
-      const el = frame.querySelector("video");
       el.addEventListener("loadedmetadata", () => {
         if (el.videoWidth && el.videoHeight) {
           frame.style.setProperty("--video-ratio", `${el.videoWidth} / ${el.videoHeight}`);
         }
       });
+
+      if (v.autoplay !== false) initVideoAutoplay(frame, el);
     } else {
       frame.innerHTML = `
         <div class="video-placeholder">
@@ -951,6 +958,65 @@
     // blurb beside it rather than captioned underneath.
     $("#introHeading").textContent = v.title;
     $("#introBlurb").textContent = v.blurb;
+  }
+
+  /* ------------------------------------------------------------------
+     VIDEO AUTOPLAY ON SCROLL
+     ----------------------------------------------------------------------
+     Every browser blocks autoplay with sound, so it starts muted and offers
+     a sound button. It plays when the video is mostly on screen and pauses
+     when it leaves, so audio never carries on out of sight. If the visitor
+     pauses it themselves, scrolling back does not override that.
+     ------------------------------------------------------------------ */
+  function initVideoAutoplay(frame, el) {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+    let userPaused = false;
+    let programmatic = false;
+
+    const auto = (fn) => {
+      programmatic = true;
+      const p = fn();
+      if (p && p.catch) p.catch(() => {});
+      setTimeout(() => { programmatic = false; }, 0);
+    };
+    el.addEventListener("pause", () => {
+      if (!programmatic && !el.ended) userPaused = true;
+    });
+    el.addEventListener("play", () => { userPaused = false; });
+
+    // Sound toggle, since it has to begin muted
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "video-sound";
+    const paint = () => {
+      btn.innerHTML = el.muted
+        ? `${I.volumeOff}<span>Tap for sound</span>`
+        : `${I.volumeOn}<span>Mute</span>`;
+      btn.setAttribute("aria-label", el.muted ? "Unmute video" : "Mute video");
+      btn.classList.toggle("is-on", !el.muted);
+    };
+    btn.addEventListener("click", () => {
+      el.muted = !el.muted;
+      if (!el.muted && el.paused) auto(() => el.play());
+      paint();
+    });
+    paint();
+    frame.appendChild(btn);
+
+    const io = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((e) => {
+          if (e.intersectionRatio >= 0.5) {
+            if (!userPaused && el.paused) auto(() => el.play());
+          } else if (!el.paused) {
+            auto(() => el.pause());
+          }
+        });
+      },
+      { threshold: [0, 0.5, 0.75] }
+    );
+    io.observe(el);
   }
 
   /* ------------------------------------------------------------------
