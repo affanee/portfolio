@@ -1,4 +1,8 @@
 User-agent: *
 Allow: /
 
+# Build artifact, not a real page. Keep it out of search results so it does
+# not compete with the homepage as duplicate content.
+Disallow: /_draft-preview.html
+
 Sitemap: https://www.affanofficial.com/sitemap.xml
