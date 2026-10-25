@@ -973,6 +973,8 @@
 
     let userPaused = false;
     let programmatic = false;
+    let userMuted = false;  // they pressed mute themselves, so leave it alone
+    let unlocked = false;   // the browser has seen a gesture, audio is allowed
 
     const auto = (fn) => {
       programmatic = true;
@@ -996,19 +998,51 @@
       btn.setAttribute("aria-label", el.muted ? "Unmute video" : "Mute video");
       btn.classList.toggle("is-on", !el.muted);
     };
-    btn.addEventListener("click", () => {
+    btn.addEventListener("click", (ev) => {
+      ev.stopPropagation();
       el.muted = !el.muted;
+      userMuted = el.muted;
+      unlocked = true;
       if (!el.muted && el.paused) auto(() => el.play());
       paint();
     });
     paint();
     frame.appendChild(btn);
 
+    let onScreen = false;
+    const soundOn = () => {
+      if (userMuted || !unlocked || !onScreen || !el.muted) return;
+      el.muted = false;
+      paint();
+    };
+
+    /* Browsers only allow sound after the visitor has interacted with the page.
+       Any gesture anywhere counts, so the first click, tap or key press unlocks
+       it, and the sound comes on by itself the moment the video is on screen.
+       That means most people never press the sound button at all. */
+    const unlock = () => {
+      if (unlocked) return;
+      unlocked = true;
+      soundOn();
+    };
+    ["pointerdown", "keydown", "touchstart"].forEach((ev) =>
+      document.addEventListener(ev, unlock, { once: true, passive: true })
+    );
+
+    // The whole video is also a sound switch, a much bigger target than the pill
+    frame.addEventListener("click", (ev) => {
+      if (ev.target.closest(".video-sound")) return;
+      unlocked = true;
+      if (el.muted) { userMuted = false; el.muted = false; paint(); }
+    });
+
     const io = new IntersectionObserver(
       (entries) => {
         entries.forEach((e) => {
-          if (e.intersectionRatio >= 0.5) {
+          onScreen = e.intersectionRatio >= 0.5;
+          if (onScreen) {
             if (!userPaused && el.paused) auto(() => el.play());
+            soundOn();
           } else if (!el.paused) {
             auto(() => el.pause());
           }
@@ -1290,6 +1324,134 @@
     });
   }
 
+
+  /* ------------------------------------------------------------------
+     CAREER HELP + LOCAL CURRENCY
+     ----------------------------------------------------------------------
+     Prices are authored per currency in content.js rather than converted at
+     a live rate, so the numbers stay deliberate instead of landing on
+     something like 11,847. The currency is guessed from the visitor's
+     timezone, then their browser language, then falls back to USD. They can
+     always override it, and the choice is remembered.
+     ------------------------------------------------------------------ */
+  var CAREER_STORE = "abe-currency";
+
+  var CUR_BY_COUNTRY = {
+    BD: "BDT", IN: "INR", PK: "PKR", GB: "GBP", US: "USD",
+    AT: "EUR", BE: "EUR", HR: "EUR", CY: "EUR", EE: "EUR", FI: "EUR",
+    FR: "EUR", DE: "EUR", GR: "EUR", IE: "EUR", IT: "EUR", LV: "EUR",
+    LT: "EUR", LU: "EUR", MT: "EUR", NL: "EUR", PT: "EUR", SK: "EUR",
+    SI: "EUR", ES: "EUR",
+  };
+
+  var COUNTRY_BY_TZ = {
+    "Asia/Dhaka": "BD",
+    "Asia/Kolkata": "IN", "Asia/Calcutta": "IN",
+    "Asia/Karachi": "PK",
+    "Europe/London": "GB", "Europe/Belfast": "GB",
+    "Europe/Dublin": "IE", "Europe/Paris": "FR", "Europe/Berlin": "DE",
+    "Europe/Madrid": "ES", "Europe/Rome": "IT", "Europe/Amsterdam": "NL",
+    "Europe/Brussels": "BE", "Europe/Vienna": "AT", "Europe/Lisbon": "PT",
+    "Europe/Athens": "GR", "Europe/Helsinki": "FI", "Europe/Bratislava": "SK",
+    "Europe/Ljubljana": "SI", "Europe/Tallinn": "EE", "Europe/Riga": "LV",
+    "Europe/Vilnius": "LT", "Europe/Luxembourg": "LU", "Europe/Malta": "MT",
+    "Europe/Nicosia": "CY", "Europe/Zagreb": "HR",
+  };
+
+  function detectCurrency(available) {
+    var pick = null;
+    try {
+      var saved = localStorage.getItem(CAREER_STORE);
+      if (saved && available.indexOf(saved) > -1) return saved;
+    } catch (e) {}
+
+    try {
+      var tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
+      var country = COUNTRY_BY_TZ[tz];
+      if (country && CUR_BY_COUNTRY[country]) pick = CUR_BY_COUNTRY[country];
+    } catch (e) {}
+
+    if (!pick) {
+      // "en-IN" or "bn-BD" carries the region, plain "en" does not
+      var langs = (navigator.languages && navigator.languages.length)
+        ? navigator.languages : [navigator.language || ""];
+      for (var i = 0; i < langs.length && !pick; i++) {
+        var m = String(langs[i]).toUpperCase().match(/[-_]([A-Z]{2})$/);
+        if (m && CUR_BY_COUNTRY[m[1]]) pick = CUR_BY_COUNTRY[m[1]];
+      }
+    }
+
+    if (!pick || available.indexOf(pick) === -1) pick = "USD";
+    return pick;
+  }
+
+  function initCareer() {
+    var cr = C.career;
+    if (!cr || !$("#careerGrid")) return;
+
+    $("#careerEyebrow").textContent = cr.eyebrow;
+    $("#careerHeading").textContent = cr.heading;
+    $("#careerIntro").textContent = cr.intro;
+    $("#careerSmallprint").textContent = cr.smallprint;
+    $("#currencyNote").textContent = cr.currencyNote;
+
+    var codes = Object.keys(cr.currencies);
+    var current = detectCurrency(codes);
+
+    var sel = $("#currencySelect");
+    sel.innerHTML = codes.map(function (c) {
+      return '<option value="' + esc(c) + '">' + esc(cr.currencies[c].symbol) +
+             "  " + esc(cr.currencies[c].label) + "</option>";
+    }).join("");
+    sel.value = current;
+
+    function money(amount, code) {
+      if (!amount) return "Free";
+      var c = cr.currencies[code] || cr.currencies.USD;
+      return c.symbol + new Intl.NumberFormat("en-US").format(amount);
+    }
+
+    function paint(code) {
+      $("#careerGrid").innerHTML = cr.packages.map(function (pk) {
+        var amount = pk.price[code];
+        if (amount === undefined) amount = pk.price.USD;
+        var isFree = !amount;
+        return '' +
+          '<article class="card spotlight career-card' + (pk.featured ? " featured" : "") + '">' +
+            (pk.tag ? '<span class="career-tag">' + esc(pk.tag) + "</span>" : "") +
+            '<h3 class="career-name">' + esc(pk.name) + "</h3>" +
+            '<p class="career-summary">' + esc(pk.summary) + "</p>" +
+            '<div class="career-price-row">' +
+              '<span class="career-price' + (isFree ? " is-free" : "") + '">' + esc(money(amount, code)) + "</span>" +
+              '<span class="career-duration">' + esc(pk.duration) + "</span>" +
+            "</div>" +
+            '<ul class="deliverables">' +
+              pk.includes.map(function (i) {
+                return "<li>" + I.check + "<span>" + esc(i) + "</span></li>";
+              }).join("") +
+            "</ul>" +
+            '<a class="btn ' + (pk.featured ? "btn-primary" : "btn-ghost") + ' btn-block" ' +
+               'href="' + esc(C.identity.calendly) + '" target="_blank" rel="noopener">' +
+               esc(pk.cta) + " " + I.arrowRight + "</a>" +
+          "</article>";
+      }).join("");
+      initSpotlight();
+    }
+
+    paint(current);
+
+    sel.addEventListener("change", function () {
+      current = sel.value;
+      try { localStorage.setItem(CAREER_STORE, current); } catch (e) {}
+      var grid = $("#careerGrid");
+      grid.classList.add("swapping");
+      setTimeout(function () {
+        paint(current);
+        grid.classList.remove("swapping");
+      }, 160);
+    });
+  }
+
   /* ------------------------------------------------------------------
      FINAL CTA + FOOTER
      ------------------------------------------------------------------ */
@@ -1344,6 +1506,7 @@
       initCalculator();
       initTestimonials();
       initAbout();
+      initCareer();
       initFaq();
       initBooking();
       initContact();

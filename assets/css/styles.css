@@ -431,8 +431,8 @@ section { position: relative; }
   .brand-mark .shard { transform: none !important; }
 }
 .brand-text { display: flex; flex-direction: column; line-height: 1.15; }
-.brand-name { font-size: 0.95rem; }
-.brand-role { font-size: 0.68rem; color: var(--fg-dim); font-weight: 400; letter-spacing: 0.02em; }
+.brand-name { font-size: 0.95rem; white-space: nowrap; }
+.brand-role { font-size: 0.68rem; color: var(--fg-dim); font-weight: 400; letter-spacing: 0.02em; white-space: nowrap; }
 
 .nav-links { display: flex; align-items: center; gap: 4px; }
 .nav-link {
@@ -1543,7 +1543,15 @@ section { position: relative; }
 }
 .video-sound svg { width: 15px; height: 15px; flex-shrink: 0; }
 .video-sound:hover { background: var(--accent); border-color: var(--accent); transform: translateY(-1px); }
-.video-sound.is-on { background: rgba(20,22,29,0.6); }
+/* While muted it breathes gently, so nobody misses that sound is available */
+.video-sound:not(.is-on) { animation: soundNudge 2.6s var(--ease-out) infinite; }
+@keyframes soundNudge {
+  0%, 70%, 100% { box-shadow: 0 0 0 0 rgba(59,130,246,0); }
+  35%           { box-shadow: 0 0 0 6px rgba(59,130,246,0.18); }
+}
+.video-sound.is-on { background: rgba(20,22,29,0.6); animation: none; }
+/* The video itself doubles as a sound switch */
+.video-frame { cursor: pointer; }
 .video-sound.is-on span { display: none; }
 .video-sound.is-on:hover span { display: inline; }
 .video-placeholder {
@@ -1876,7 +1884,7 @@ section { position: relative; }
   .logo-slot:nth-child(n+4) { display: none; }
 }
 
-@media (max-width: 900px) {
+@media (max-width: 1040px) {
   .nav-links { display: none; }
   .nav-cta .btn-ghost { display: none; }
   .nav-toggle { display: flex; }
@@ -1935,4 +1943,129 @@ section { position: relative; }
 @media print {
   .nav, .nav-mobile, .modal-backdrop, .scroll-progress, .glow, .grid-bg { display: none !important; }
   body { background: #fff; color: #000; }
+}
+
+/* --------------------------------------------------------------------------
+   25. CAREER HELP (students and freshers)
+   -------------------------------------------------------------------------- */
+#career { overflow: hidden; }
+
+.career-head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--space-6);
+  flex-wrap: wrap;
+  margin-bottom: clamp(32px, 5vw, 56px);
+}
+.career-head > div:first-child { max-width: 680px; min-width: 0; }
+
+/* Currency switcher */
+.currency-pick { display: flex; flex-direction: column; gap: 8px; flex-shrink: 0; }
+.currency-pick label {
+  font-family: var(--font-mono);
+  font-size: 0.66rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--fg-dim);
+}
+.currency-pick .select {
+  width: auto;
+  min-width: 132px;
+  padding: 11px 42px 11px 15px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  min-height: 44px;
+}
+
+.career-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: var(--space-5);
+  align-items: start;
+  transition: opacity var(--dur) var(--ease-out);
+}
+.career-grid > * { min-width: 0; }
+.career-grid.swapping { opacity: 0.25; }
+
+.career-card { display: flex; flex-direction: column; height: 100%; }
+.career-card.featured {
+  border-color: var(--border-accent);
+  background: linear-gradient(180deg, var(--accent-soft), var(--bg-elev-1) 42%);
+  box-shadow: 0 0 0 1px var(--accent-line), var(--shadow-lg);
+}
+.career-tag {
+  align-self: flex-start;
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  padding: 5px 11px;
+  border-radius: var(--r-full);
+  background: rgba(255,255,255,0.05);
+  border: 1px solid var(--border);
+  color: var(--fg-dim);
+  margin-bottom: var(--space-4);
+}
+.career-card.featured .career-tag {
+  background: var(--grad-accent);
+  border-color: transparent;
+  color: #fff;
+  font-weight: 600;
+}
+.career-name {
+  font-family: var(--font-display);
+  font-size: 1.24rem;
+  font-weight: 620;
+  letter-spacing: -0.025em;
+  margin-bottom: 10px;
+}
+.career-summary { font-size: 0.93rem; color: var(--fg-muted); line-height: 1.6; margin-bottom: var(--space-5); }
+
+.career-price-row {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  flex-wrap: wrap;
+  padding-block: var(--space-4);
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  margin-bottom: var(--space-5);
+}
+.career-price {
+  font-family: var(--font-display);
+  font-size: 2.1rem;
+  font-weight: 680;
+  letter-spacing: -0.04em;
+  line-height: 1;
+  background: var(--grad-text);
+  -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+  font-variant-numeric: tabular-nums;
+}
+.career-price.is-free {
+  background: none;
+  -webkit-text-fill-color: #6EE7B7;
+  color: #6EE7B7;
+}
+.career-duration { font-size: 0.8rem; color: var(--fg-dim); }
+
+.career-card .deliverables { margin-bottom: var(--space-6); }
+.career-card .btn { margin-top: auto; }
+
+.career-smallprint {
+  margin-top: var(--space-6);
+  max-width: 72ch;
+  margin-inline: auto;
+  text-align: center;
+  font-size: 0.86rem;
+  color: var(--fg-dim);
+  line-height: 1.65;
+  padding: var(--space-4);
+  border: 1px dashed var(--border-hi);
+  border-radius: var(--r-md);
+}
+
+@media (max-width: 640px) {
+  .career-head { flex-direction: column; align-items: stretch; }
+  .currency-pick .select { width: 100%; }
 }

@@ -795,8 +795,137 @@ const CONTENT = {
     },
   ],
 
+
   /* ==========================================================================
-     15. FINAL CTA + FOOTER
+     15. CAREER HELP  (students and freshers)
+     ----------------------------------------------------------------------
+     PRICES ARE SET PER CURRENCY, not converted at a live rate. That is
+     deliberate. A straight conversion of $99 is about 12,000 taka, which no
+     student in Dhaka is going to pay, so the South Asian prices are set for
+     those markets instead. Someone comparing two currencies side by side will
+     see different real amounts. Nearly nobody does that, but you should know.
+
+     To price the same everywhere instead, just set every currency to the
+     converted figure. Every number below is yours to change.
+
+     The site picks the visitor's currency from their timezone, falls back to
+     their browser language, and defaults to USD. They can also switch it
+     themselves with the selector, and the choice is remembered.
+     ====================================================================== */
+  career: {
+    eyebrow: "Career help",
+    heading: "Just starting out? I can help with that too.",
+    intro:
+      "I get a lot of messages from students and freshers asking how to break into sales, marketing or tech. I could not answer all of them properly one at a time, so I turned it into something structured. The first call is free, same as it is for companies.",
+
+    // Shown under the currency switcher
+    currencyNote: "Prices shown in",
+
+    currencies: {
+      USD: { symbol: "$",  label: "USD" },
+      BDT: { symbol: "\u09f3", label: "BDT" },
+      INR: { symbol: "\u20b9", label: "INR" },
+      PKR: { symbol: "\u20a8", label: "PKR" },
+      EUR: { symbol: "\u20ac", label: "EUR" },
+      GBP: { symbol: "\u00a3", label: "GBP" },
+    },
+
+    packages: [
+      {
+        id: "free-review",
+        name: "Free LinkedIn Review",
+        tag: "Start here",
+        summary:
+          "A quick look at your profile and three things you can fix today. No charge, no catch.",
+        duration: "15 minutes",
+        price: { USD: 0, BDT: 0, INR: 0, PKR: 0, EUR: 0, GBP: 0 },
+        includes: [
+          "I read your profile properly before we speak",
+          "The three changes that will make the biggest difference",
+          "An honest read on whether the roles you are chasing are the right ones",
+        ],
+        cta: "Book the free review",
+        featured: false,
+      },
+      {
+        id: "clarity",
+        name: "Career Clarity Session",
+        tag: "One to one",
+        summary:
+          "A proper sit down about where you are, where you want to be and what is actually in the way.",
+        duration: "45 minutes, one to one",
+        price: { USD: 29, BDT: 1500, INR: 999, PKR: 2500, EUR: 27, GBP: 23 },
+        includes: [
+          "Where to aim given your degree, your skills and the market you are in",
+          "Which roles in sales, marketing and revenue ops suit you, and which do not",
+          "What to learn next, in what order, and what to ignore",
+          "A written summary afterwards so you do not have to take notes",
+        ],
+        cta: "Book a session",
+        featured: false,
+      },
+      {
+        id: "linkedin",
+        name: "LinkedIn Profile Overhaul",
+        tag: "Most popular",
+        summary:
+          "Your whole profile rewritten, plus a month of content planned and the first three posts written for you.",
+        duration: "Delivered in 5 working days",
+        price: { USD: 99, BDT: 4999, INR: 3499, PKR: 8999, EUR: 92, GBP: 79 },
+        includes: [
+          "Headline rewritten so people know what you do in one line",
+          "About section rewritten in your voice, not corporate filler",
+          "Every role in your experience section rewritten around results",
+          "Certifications, skills and the rest of the profile sorted properly",
+          "30 days of content ideas, mapped to what your audience actually reads",
+          "The first three posts written by me, ready to publish",
+        ],
+        cta: "Get my profile sorted",
+        featured: true,
+      },
+      {
+        id: "group",
+        name: "Group Session",
+        tag: "Small group",
+        summary:
+          "Same questions, cheaper seat. A small group so everyone still gets heard.",
+        duration: "90 minutes, 8 people maximum",
+        price: { USD: 15, BDT: 800, INR: 499, PKR: 1200, EUR: 14, GBP: 12 },
+        includes: [
+          "One theme per session, announced in advance",
+          "Live questions, not a lecture with the chat turned off",
+          "The recording afterwards, yours to keep",
+          "Small enough that you can actually ask your own question",
+        ],
+        cta: "Join the next one",
+        featured: false,
+      },
+      {
+        id: "workshop",
+        name: "Workshop",
+        tag: "Hands on",
+        summary:
+          "A working session where you leave with the thing built, not just notes about building it.",
+        duration: "3 hours, live",
+        price: { USD: 25, BDT: 1500, INR: 899, PKR: 2000, EUR: 23, GBP: 19 },
+        includes: [
+          "Build it in the room: your CV, your profile or your outreach",
+          "Templates and swipe files you keep afterwards",
+          "Live feedback on your work, not generic advice",
+          "The recording and the slides",
+        ],
+        cta: "Save a seat",
+        featured: false,
+      },
+    ],
+
+    // Shown under the cards
+    smallprint:
+      "Every one of these starts with the free call, so you can decide if I am the right person before you pay anything. For universities and student clubs booking a workshop for a batch, message me and we will work something out.",
+  },
+
+  /* ==========================================================================
+     16. FINAL CTA + FOOTER
      ====================================================================== */
   finalCta: {
     heading: "Next quarter is already being decided by the system you have today.",

@@ -1545,7 +1545,15 @@ section { position: relative; }
 }
 .video-sound svg { width: 15px; height: 15px; flex-shrink: 0; }
 .video-sound:hover { background: var(--accent); border-color: var(--accent); transform: translateY(-1px); }
-.video-sound.is-on { background: rgba(20,22,29,0.6); }
+/* While muted it breathes gently, so nobody misses that sound is available */
+.video-sound:not(.is-on) { animation: soundNudge 2.6s var(--ease-out) infinite; }
+@keyframes soundNudge {
+  0%, 70%, 100% { box-shadow: 0 0 0 0 rgba(59,130,246,0); }
+  35%           { box-shadow: 0 0 0 6px rgba(59,130,246,0.18); }
+}
+.video-sound.is-on { background: rgba(20,22,29,0.6); animation: none; }
+/* The video itself doubles as a sound switch */
+.video-frame { cursor: pointer; }
 .video-sound.is-on span { display: none; }
 .video-sound.is-on:hover span { display: inline; }
 .video-placeholder {
@@ -4151,6 +4159,8 @@ window.CONTENT = CONTENT;
 
     let userPaused = false;
     let programmatic = false;
+    let userMuted = false;  // they pressed mute themselves, so leave it alone
+    let unlocked = false;   // the browser has seen a gesture, audio is allowed
 
     const auto = (fn) => {
       programmatic = true;
@@ -4174,19 +4184,51 @@ window.CONTENT = CONTENT;
       btn.setAttribute("aria-label", el.muted ? "Unmute video" : "Mute video");
       btn.classList.toggle("is-on", !el.muted);
     };
-    btn.addEventListener("click", () => {
+    btn.addEventListener("click", (ev) => {
+      ev.stopPropagation();
       el.muted = !el.muted;
+      userMuted = el.muted;
+      unlocked = true;
       if (!el.muted && el.paused) auto(() => el.play());
       paint();
     });
     paint();
     frame.appendChild(btn);
 
+    let onScreen = false;
+    const soundOn = () => {
+      if (userMuted || !unlocked || !onScreen || !el.muted) return;
+      el.muted = false;
+      paint();
+    };
+
+    /* Browsers only allow sound after the visitor has interacted with the page.
+       Any gesture anywhere counts, so the first click, tap or key press unlocks
+       it, and the sound comes on by itself the moment the video is on screen.
+       That means most people never press the sound button at all. */
+    const unlock = () => {
+      if (unlocked) return;
+      unlocked = true;
+      soundOn();
+    };
+    ["pointerdown", "keydown", "touchstart"].forEach((ev) =>
+      document.addEventListener(ev, unlock, { once: true, passive: true })
+    );
+
+    // The whole video is also a sound switch, a much bigger target than the pill
+    frame.addEventListener("click", (ev) => {
+      if (ev.target.closest(".video-sound")) return;
+      unlocked = true;
+      if (el.muted) { userMuted = false; el.muted = false; paint(); }
+    });
+
     const io = new IntersectionObserver(
       (entries) => {
         entries.forEach((e) => {
-          if (e.intersectionRatio >= 0.5) {
+          onScreen = e.intersectionRatio >= 0.5;
+          if (onScreen) {
             if (!userPaused && el.paused) auto(() => el.play());
+            soundOn();
           } else if (!el.paused) {
             auto(() => el.pause());
           }
