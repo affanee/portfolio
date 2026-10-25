@@ -832,47 +832,33 @@ const CONTENT = {
 
     packages: [
       {
-        id: "free-review",
-        name: "Free LinkedIn Review",
-        tag: "Start here",
+        id: "free-audit",
+        name: "Free LinkedIn Audit",
+        tag: "Free",
         summary:
-          "A quick look at your profile and three things you can fix today. No charge, no catch.",
-        duration: "15 minutes",
+          "I go through your profile section by section and send back what to change. No charge and no call needed.",
+        duration: "Written notes, no call required",
         price: { USD: 0, BDT: 0, INR: 0, PKR: 0, EUR: 0, GBP: 0 },
         includes: [
-          "I read your profile properly before we speak",
-          "The three changes that will make the biggest difference",
+          "Your headline, about, experience and skills each reviewed on their own",
+          "The specific wording to change, not vague advice to improve it",
+          "What recruiters searching for your target role will and will not find",
           "An honest read on whether the roles you are chasing are the right ones",
         ],
-        cta: "Book the free review",
-        featured: false,
-      },
-      {
-        id: "clarity",
-        name: "Career Clarity Session",
-        tag: "One to one",
-        summary:
-          "A proper sit down about where you are, where you want to be and what is actually in the way.",
-        duration: "45 minutes, one to one",
-        price: { USD: 29, BDT: 1500, INR: 999, PKR: 2500, EUR: 27, GBP: 23 },
-        includes: [
-          "Where to aim given your degree, your skills and the market you are in",
-          "Which roles in sales, marketing and revenue ops suit you, and which do not",
-          "What to learn next, in what order, and what to ignore",
-          "A written summary afterwards so you do not have to take notes",
-        ],
-        cta: "Book a session",
+        cta: "Get a free audit",
         featured: false,
       },
       {
         id: "linkedin",
-        name: "LinkedIn Profile Overhaul",
+        name: "LinkedIn Profile Optimization",
         tag: "Most popular",
         summary:
-          "Your whole profile rewritten, plus a month of content planned and the first three posts written for you.",
+          "The finished version. Polished, market ready and built to get you hired, with a month of content planned and your first three posts written.",
         duration: "Delivered in 5 working days",
+        guarantee: "You land a role within 3 months",
         price: { USD: 99, BDT: 4999, INR: 3499, PKR: 8999, EUR: 92, GBP: 79 },
         includes: [
+          "An internship, part time or full time role within 3 months, guaranteed",
           "Headline rewritten so people know what you do in one line",
           "About section rewritten in your voice, not corporate filler",
           "Every role in your experience section rewritten around results",
@@ -884,13 +870,35 @@ const CONTENT = {
         featured: true,
       },
       {
+        id: "one-to-one",
+        name: "One to One Session",
+        tag: "Private",
+        summary:
+          "Just you and me, working through where you are, where you want to be and what is in the way.",
+        duration: "Per session. One hour, two, three, however long it takes.",
+        variants: [
+          { label: "Virtual", price: { USD: 49, BDT: 3000, INR: 2000, PKR: 5000, EUR: 45, GBP: 39 } },
+          { label: "In person", note: "Dhaka only",
+            price: { USD: 79, BDT: 5000, INR: 3500, PKR: 8500, EUR: 72, GBP: 62 } },
+        ],
+        includes: [
+          "Where to aim given your degree, your skills and the market you are in",
+          "Which roles in sales, marketing and revenue ops suit you, and which do not",
+          "What to learn next, in what order, and what to ignore",
+          "We keep going until the questions run out, not until a timer does",
+          "A written summary afterwards so you do not have to take notes",
+        ],
+        cta: "Book a session",
+        featured: false,
+      },
+      {
         id: "group",
         name: "Group Session",
         tag: "Small group",
         summary:
-          "Same questions, cheaper seat. A small group so everyone still gets heard.",
-        duration: "90 minutes, 8 people maximum",
-        price: { USD: 15, BDT: 800, INR: 499, PKR: 1200, EUR: 14, GBP: 12 },
+          "Same questions, cheaper seat. Small enough that everyone still gets heard.",
+        duration: "90 minutes, per person",
+        price: { USD: 19, BDT: 1200, INR: 799, PKR: 2000, EUR: 18, GBP: 15 },
         includes: [
           "One theme per session, announced in advance",
           "Live questions, not a lecture with the chat turned off",
@@ -905,9 +913,9 @@ const CONTENT = {
         name: "Workshop",
         tag: "Hands on",
         summary:
-          "A working session where you leave with the thing built, not just notes about building it.",
-        duration: "3 hours, live",
-        price: { USD: 25, BDT: 1500, INR: 899, PKR: 2000, EUR: 23, GBP: 19 },
+          "A working session where you leave with the thing built, not just notes about building it. Some consulting folded in along the way.",
+        duration: "Per session, per person",
+        price: { USD: 35, BDT: 2000, INR: 1400, PKR: 3500, EUR: 32, GBP: 28 },
         includes: [
           "Build it in the room: your CV, your profile or your outreach",
           "Templates and swipe files you keep afterwards",
@@ -919,9 +927,10 @@ const CONTENT = {
       },
     ],
 
+
     // Shown under the cards
     smallprint:
-      "Every one of these starts with the free call, so you can decide if I am the right person before you pay anything. For universities and student clubs booking a workshop for a batch, message me and we will work something out.",
+      "Start with the free audit, so you can see how I work before you pay anything. In person sessions run in Dhaka. For universities and student clubs booking a workshop for a batch, message me and we will work something out.",
   },
 
   /* ==========================================================================

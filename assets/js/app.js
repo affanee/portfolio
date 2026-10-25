@@ -1413,18 +1413,42 @@
 
     function paint(code) {
       $("#careerGrid").innerHTML = cr.packages.map(function (pk) {
-        var amount = pk.price[code];
-        if (amount === undefined) amount = pk.price.USD;
-        var isFree = !amount;
+        // A package either has one price, or several to choose between
+        var priceBlock;
+        if (pk.variants && pk.variants.length) {
+          priceBlock =
+            '<div class="career-variants">' +
+              pk.variants.map(function (vr) {
+                var amt = vr.price[code];
+                if (amt === undefined) amt = vr.price.USD;
+                return '<div class="career-variant">' +
+                    '<span class="cv-label">' + esc(vr.label) +
+                      (vr.note ? ' <em>' + esc(vr.note) + "</em>" : "") + "</span>" +
+                    '<span class="cv-price">' + esc(money(amt, code)) + "</span>" +
+                  "</div>";
+              }).join("") +
+            "</div>" +
+            '<p class="career-duration standalone">' + esc(pk.duration) + "</p>";
+        } else {
+          var amount = pk.price[code];
+          if (amount === undefined) amount = pk.price.USD;
+          var isFree = !amount;
+          priceBlock =
+            '<div class="career-price-row">' +
+              '<span class="career-price' + (isFree ? " is-free" : "") + '">' + esc(money(amount, code)) + "</span>" +
+              '<span class="career-duration">' + esc(pk.duration) + "</span>" +
+            "</div>";
+        }
+
         return '' +
           '<article class="card spotlight career-card' + (pk.featured ? " featured" : "") + '">' +
             (pk.tag ? '<span class="career-tag">' + esc(pk.tag) + "</span>" : "") +
             '<h3 class="career-name">' + esc(pk.name) + "</h3>" +
             '<p class="career-summary">' + esc(pk.summary) + "</p>" +
-            '<div class="career-price-row">' +
-              '<span class="career-price' + (isFree ? " is-free" : "") + '">' + esc(money(amount, code)) + "</span>" +
-              '<span class="career-duration">' + esc(pk.duration) + "</span>" +
-            "</div>" +
+            (pk.guarantee
+              ? '<div class="career-guarantee">' + I.shield + "<span>" + esc(pk.guarantee) + "</span></div>"
+              : "") +
+            priceBlock +
             '<ul class="deliverables">' +
               pk.includes.map(function (i) {
                 return "<li>" + I.check + "<span>" + esc(i) + "</span></li>";
