@@ -1207,14 +1207,6 @@
 
     $("#responsePromise").innerHTML = `${I.shield}<span>${esc(ct.responsePromise)}</span>`;
 
-    // Demo-mode banner when no endpoint configured
-    if (!C.formEndpoint) {
-      $("#demoNote").innerHTML = `${I.alert}<span><strong>Demo mode.</strong> The form validates and
-        shows its success state but doesn't send yet. Add your Formspree URL to
-        <code>formEndpoint</code> in <code>content.js</code> to go live.</span>`;
-      $("#demoNote").style.display = "flex";
-    }
-
     // Character counter
     const details = $("#details");
     const counter = $("#detailsCount");
@@ -1282,17 +1274,36 @@
       const data = Object.fromEntries(new FormData(form).entries());
 
       try {
-        if (C.formEndpoint) {
-          const res = await fetch(C.formEndpoint, {
-            method: "POST",
-            headers: { Accept: "application/json" },
-            body: new FormData(form),
-          });
-          if (!res.ok) throw new Error("Submission failed");
-        } else {
-          await new Promise((r) => setTimeout(r, 900)); // demo mode
-          console.info("[Demo mode] Form data captured:", data);
+        if (!C.formEndpoint) {
+          throw new Error("No form endpoint is configured, so this could not be sent.");
         }
+
+        const payload = new FormData(form);
+        // Gives the email a useful subject line instead of the form id
+        payload.append(
+          "_subject",
+          `New enquiry from ${data.name || "the website"}${data.company ? " (" + data.company + ")" : ""}`
+        );
+
+        const res = await fetch(C.formEndpoint, {
+          method: "POST",
+          headers: { Accept: "application/json" },
+          body: payload,
+        });
+
+        // Formspree answers 200 {ok:true}, or an error status with
+        // {errors:[{message}]}. Both have to be checked before claiming success.
+        let body = null;
+        try { body = await res.json(); } catch (e) {}
+
+        if (!res.ok || (body && body.ok === false)) {
+          const detail =
+            body && Array.isArray(body.errors) && body.errors.length
+              ? body.errors.map((x) => x.message).filter(Boolean).join(". ")
+              : "";
+          throw new Error(detail || `The server refused it (${res.status}).`);
+        }
+
         form.style.display = "none";
         $("#formSuccess").classList.add("show");
         $("#successName").textContent = String(data.name || "").split(" ")[0] || "there";
@@ -1308,8 +1319,11 @@
           box.style.marginTop = "14px";
           form.appendChild(box);
         }
+        let reason = err && err.message ? String(err.message).trim() : "";
+        if (reason && !/[.!?]$/.test(reason)) reason += ".";
         box.innerHTML = I.alert +
-          `<span>Something went wrong sending that. Please email me directly at
+          `<span>That did not send. ${esc(reason)}
+           Please email me directly at
            <a href="mailto:${esc(C.identity.email)}" style="color:inherit;text-decoration:underline">${esc(C.identity.email)}</a>.</span>`;
       }
     });

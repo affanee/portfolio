@@ -64,7 +64,7 @@ const CONTENT = {
      Until you do, the form runs in DEMO MODE. It checks the fields and shows
      the success message but it does not send anything.
      ====================================================================== */
-  formEndpoint: "", // ⚠️ REPLACE with your Formspree URL
+  formEndpoint: "https://formspree.io/f/xkjjzkkl",
 
   /* ==========================================================================
      3. HERO
